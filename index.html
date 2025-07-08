@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
   <head>
+    <script>
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        !localStorage.getItem("theme")
+      ) {
+        document.documentElement.classList.add("dark");
+      }
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Geethanga Dissanayake - Software Developer</title>
@@ -15,107 +23,16 @@
       };
     </script>
     <!-- ✅ FAVICON -->
-    <link
-      rel="icon"
-      href="https://cdn-icons-png.flaticon.com/512/3523/3523881.png"
-    />
+    <link rel="icon" type="image/png" href="assets/letter-g.png" />
 
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <style>
-      /* Custom animations */
-      @keyframes float {
-        0%,
-        100% {
-          transform: translateY(0px);
-        }
-        50% {
-          transform: translateY(-10px);
-        }
-      }
-
-      @keyframes slideIn {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .float-animation {
-        animation: float 3s ease-in-out infinite;
-      }
-      .slide-in {
-        animation: slideIn 0.6s ease-out;
-      }
-
-      .profile-image {
-        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
-        border-radius: 50%;
-        padding: 8px;
-      }
-
-      /* .skill-card:hover {
-        transform: translateY(-5px);
-        transition: all 0.3s ease;
-      }
-      .project-card:hover {
-        transform: translateY(-8px);
-        transition: all 0.3s ease;
-      } */
-
-      /* ✅ UPDATED HOVER ANIMATIONS */
-      .skill-card,
-      .project-card {
-        transition: transform 0.5s ease, box-shadow 0.5s ease;
-      }
-      .skill-card:hover {
-        transform: translateY(-5px);
-      }
-      .project-card:hover {
-        transform: translateY(-8px);
-      }
-
-      .dark .bg-gradient-to-br {
-        background: linear-gradient(to bottom right, #1f2937, #111827);
-      }
-
-      /* Custom scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #667eea;
-        border-radius: 4px;
-      }
-      .dark ::-webkit-scrollbar-track {
-        background: #374151;
-      }
-      .dark ::-webkit-scrollbar-thumb {
-        background: #4f46e5;
-      }
-
-      /* Mobile menu animation */
-      .mobile-menu {
-        transform: translateX(100%);
-        transition: transform 0.3s ease-in-out;
-      }
-
-      .mobile-menu.open {
-        transform: translateX(0);
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body
-    class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300"
+    class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-100 ease-in-out"
   >
     <!-- Navigation -->
     <nav
@@ -197,11 +114,14 @@
         id="mobileMenu"
         class="mobile-menu fixed top-0 right-0 w-64 h-full bg-white dark:bg-gray-900 shadow-lg z-40"
       >
-        <div class="p-6">
+        <!-- Remove p-6 this div and add it to under div -->
+        <div>
           <button id="closeMobileMenu" class="float-right text-2xl mb-8">
             <i class="fas fa-times"></i>
           </button>
-          <div class="flex flex-col space-y-6 mt-12">
+          <div
+            class="flex flex-col space-y-6 mt-12 p-6 bg-white dark:bg-gray-900"
+          >
             <a
               href="#home"
               class="mobile-link text-lg hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
@@ -257,7 +177,7 @@
             <h2
               class="text-2xl md:text-3xl text-gray-600 dark:text-gray-300 mb-6"
             >
-              Software Developer
+              <span id="typewriter" class="inline-block w-[20ch]"></span>
             </h2>
             <p
               class="text-lg text-gray-600 dark:text-gray-300 mb-8 leading-relaxed"
@@ -271,49 +191,103 @@
             <!-- ✅ ADDED BUTTONS UNDER PARAGRAPH -->
             <div class="flex flex-wrap gap-4 mt-6 mb-3">
               <a
-                href="https://drive.google.com/uc?export=download&id=YOUR_FILE_ID"
-                class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
-                target="_blank"
-                >Download CV</a
+                href="assets/Geethanga_Dissanayake_Resume.pdf"
+                download
+                class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"
+                  />
+                </svg>
+                Download CV
+              </a>
               <a
-                href="https://drive.google.com/file/d/YOUR_FILE_ID/view"
-                class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                href="assets/Geethanga_Dissanayake_Resume.pdf"
+                class="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
                 target="_blank"
-                >View CV</a
               >
+                <!-- Eye Icon (Heroicons - solid) -->
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+                View CV
+              </a>
+
               <a
                 href="#projects"
-                class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
-                >Show Projects</a
+                class="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
+                <!-- Laptop Icon (Heroicons - Outline) -->
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 6a2 2 0 012-2h14a2 2 0 012 2v10H3V6zm0 12h18a1 1 0 001-1v-1H2v1a1 1 0 001 1z"
+                  />
+                </svg>
+                Show Projects
+              </a>
             </div>
 
             <!-- Social Links -->
             <div class="flex space-x-6">
               <a
-                href="https://github.com/geethanga"
+                href="https://github.com/geethanga12"
                 target="_blank"
                 class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors"
               >
                 <i class="fab fa-github text-xl"></i>
               </a>
               <a
-                href="https://linkedin.com/in/geethanga"
+                href="https://www.linkedin.com/in/geethanga-dissanayake/"
                 target="_blank"
                 class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors"
               >
                 <i class="fab fa-linkedin text-xl"></i>
               </a>
               <a
-                href="https://wa.me/+94123456789"
+                href="https://wa.me/+94779907343"
                 target="_blank"
                 class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors"
               >
                 <i class="fab fa-whatsapp text-xl"></i>
               </a>
               <a
-                href="mailto:geethanga@example.com"
+                href="mailto:dissanayakegeethanga@gmail.com"
                 class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors"
               >
                 <i class="fas fa-envelope text-xl"></i>
@@ -370,7 +344,7 @@
             <!-- Social Links -->
             <div class="flex space-x-6">
               <a
-                href="https://github.com/geethanga"
+                href="https://github.com/geethanga12"
                 target="_blank"
                 class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center hover:bg-indigo-200 dark:hover:bg-indigo-800 transition-colors"
               >
@@ -379,7 +353,7 @@
                 ></i>
               </a>
               <a
-                href="https://linkedin.com/in/geethanga"
+                href="https://www.linkedin.com/in/geethanga-dissanayake/"
                 target="_blank"
                 class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center hover:bg-indigo-200 dark:hover:bg-indigo-800 transition-colors"
               >
@@ -388,7 +362,7 @@
                 ></i>
               </a>
               <a
-                href="https://wa.me/+94123456789"
+                href="https://wa.me/+94779907343"
                 target="_blank"
                 class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center hover:bg-indigo-200 dark:hover:bg-indigo-800 transition-colors"
               >
@@ -397,7 +371,7 @@
                 ></i>
               </a>
               <a
-                href="mailto:geethanga@example.com"
+                href="mailto:dissanayakegeethanga@gmail.com"
                 class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center hover:bg-indigo-200 dark:hover:bg-indigo-800 transition-colors"
               >
                 <i
@@ -438,22 +412,77 @@
               <!-- ✅ ADDED BUTTONS UNDER PARAGRAPH -->
               <div class="flex flex-wrap gap-4 mt-6">
                 <a
-                  href="https://drive.google.com/uc?export=download&id=YOUR_FILE_ID"
-                  class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
-                  target="_blank"
-                  >Download CV</a
+                  href="assets/Geethanga_Dissanayake_Resume.pdf"
+                  download
+                  class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
                 >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"
+                    />
+                  </svg>
+                  Download CV
+                </a>
+
                 <a
-                  href="https://drive.google.com/file/d/YOUR_FILE_ID/view"
-                  class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                  href="assets/Geethanga_Dissanayake_Resume.pdf"
+                  class="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
                   target="_blank"
-                  >View CV</a
                 >
+                  <!-- Eye Icon (Heroicons - solid) -->
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                  </svg>
+                  View CV
+                </a>
+
                 <a
                   href="#projects"
-                  class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
-                  >Show Projects</a
+                  class="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
                 >
+                  <!-- Laptop Icon (Heroicons - Outline) -->
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 6a2 2 0 012-2h14a2 2 0 012 2v10H3V6zm0 12h18a1 1 0 001-1v-1H2v1a1 1 0 001 1z"
+                    />
+                  </svg>
+                  Show Projects
+                </a>
               </div>
             </div>
           </div>
@@ -624,7 +653,8 @@
                 >
               </div>
               <a
-                href="#"
+                href="https://github.com/geethanga12/dictionary-webapp.git"
+                target="_blank"
                 class="text-indigo-600 dark:text-indigo-400 hover:underline"
                 >View Project →</a
               >
@@ -661,7 +691,8 @@
                 >
               </div>
               <a
-                href="#"
+                href="https://github.com/geethanga12/Sri-Lankan-NIC-Checker.git"
+                target="_blank"
                 class="text-indigo-600 dark:text-indigo-400 hover:underline"
                 >View Project →</a
               >
@@ -698,7 +729,8 @@
                 >
               </div>
               <a
-                href="#"
+                href="https://github.com/geethanga12/weather-app.git"
+                target="_blank"
                 class="text-indigo-600 dark:text-indigo-400 hover:underline"
                 >View Project →</a
               >
@@ -737,7 +769,8 @@
                 >
               </div>
               <a
-                href="#"
+                href="https://github.com/geethanga12/cas-cinec.git"
+                target="_blank"
                 class="text-indigo-600 dark:text-indigo-400 hover:underline"
                 >View Project →</a
               >
@@ -778,7 +811,8 @@
                 >
               </div>
               <a
-                href="#"
+                href="https://github.com/geethanga12"
+                target="_blank"
                 class="text-indigo-600 dark:text-indigo-400 hover:underline"
                 >View Project →</a
               >
@@ -819,7 +853,8 @@
                 >
               </div>
               <a
-                href="#"
+                href="https://github.com/geethanga12"
+                target="_blank"
                 class="text-indigo-600 dark:text-indigo-400 hover:underline"
                 >View Project →</a
               >
@@ -981,9 +1016,9 @@
                 <div>
                   <p class="font-semibold">Email</p>
                   <a
-                    href="mailto:geethanga@example.com"
+                    href="mailto:dissanayakegeethanga@gmail.com"
                     class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
-                    >geethanga@example.com</a
+                    >dissanayakegeethanga@gmail.com</a
                   >
                 </div>
               </div>
@@ -999,9 +1034,9 @@
                 <div>
                   <p class="font-semibold">WhatsApp</p>
                   <a
-                    href="https://wa.me/+94123456789"
+                    href="https://wa.me/+94779907343"
                     class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
-                    >+94 12 345 6789</a
+                    >+94 77 990 7343</a
                   >
                 </div>
               </div>
@@ -1017,7 +1052,7 @@
                 <div>
                   <p class="font-semibold">LinkedIn</p>
                   <a
-                    href="https://linkedin.com/in/geethanga"
+                    href="https://www.linkedin.com/in/geethanga-dissanayake/"
                     class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
                     >linkedin.com/in/geethanga</a
                   >
@@ -1035,7 +1070,7 @@
                 <div>
                   <p class="font-semibold">GitHub</p>
                   <a
-                    href="https://github.com/geethanga"
+                    href="https://github.com/geethanga12"
                     class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
                     >github.com/geethanga</a
                   >
@@ -1150,151 +1185,6 @@
       </div>
     </footer>
 
-    <script>
-      // Dark mode toggle functionality
-      const darkModeToggle = document.getElementById("darkModeToggle");
-      const darkModeToggleMobile = document.getElementById(
-        "darkModeToggleMobile"
-      );
-      const html = document.documentElement;
-
-      // Check for saved theme preference or default to light mode
-      const currentTheme = localStorage.getItem("theme") || "light";
-      if (currentTheme === "dark") {
-        html.classList.add("dark");
-      }
-
-      function toggleDarkMode() {
-        html.classList.toggle("dark");
-        const theme = html.classList.contains("dark") ? "dark" : "light";
-        localStorage.setItem("theme", theme);
-      }
-
-      darkModeToggle.addEventListener("click", toggleDarkMode);
-      darkModeToggleMobile.addEventListener("click", toggleDarkMode);
-
-      // Mobile menu functionality
-      const mobileMenuToggle = document.getElementById("mobileMenuToggle");
-      const mobileMenu = document.getElementById("mobileMenu");
-      const closeMobileMenu = document.getElementById("closeMobileMenu");
-      const mobileLinks = document.querySelectorAll(".mobile-link");
-
-      mobileMenuToggle.addEventListener("click", () => {
-        mobileMenu.classList.add("open");
-      });
-
-      closeMobileMenu.addEventListener("click", () => {
-        mobileMenu.classList.remove("open");
-      });
-
-      // Close mobile menu when clicking on a link
-      mobileLinks.forEach((link) => {
-        link.addEventListener("click", () => {
-          mobileMenu.classList.remove("open");
-        });
-      });
-
-      // Smooth scrolling for navigation links
-      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-        anchor.addEventListener("click", function (e) {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute("href"));
-          if (target) {
-            target.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }
-        });
-      });
-
-      // Contact form handling
-      const contactForm = document.getElementById("contactForm");
-      contactForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        // Get form data
-        const formData = new FormData(this);
-        const name = formData.get("name");
-        const email = formData.get("email");
-        const subject = formData.get("subject");
-        const message = formData.get("message");
-
-        // Simple form validation
-        if (!name || !email || !subject || !message) {
-          alert("Please fill in all fields.");
-          return;
-        }
-
-        // Simulate form submission
-        alert("Thank you for your message! I'll get back to you soon.");
-        this.reset();
-      });
-
-      // Add scroll effect to navbar
-      window.addEventListener("scroll", function () {
-        const nav = document.querySelector("nav");
-        if (window.scrollY > 100) {
-          nav.classList.add("shadow-lg");
-        } else {
-          nav.classList.remove("shadow-lg");
-        }
-      });
-
-      // Add animation on scroll
-      const observerOptions = {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px",
-      };
-
-      const observer = new IntersectionObserver(function (entries) {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("slide-in");
-          }
-        });
-      }, observerOptions);
-
-      // Observe elements for animation
-      document.querySelectorAll(".skill-card, .project-card").forEach((el) => {
-        observer.observe(el);
-      });
-
-      // Typing effect for home section (optional enhancement)
-      const titles = [
-        "Software Developer",
-        "Full-Stack Developer",
-        "Software Engineer",
-      ];
-      let titleIndex = 0;
-      let charIndex = 0;
-      let isDeleting = false;
-      const titleElement = document.querySelector("h2");
-
-      function typeEffect() {
-        const currentTitle = titles[titleIndex];
-
-        if (isDeleting) {
-          titleElement.textContent = currentTitle.substring(0, charIndex - 1);
-          charIndex--;
-        } else {
-          titleElement.textContent = currentTitle.substring(0, charIndex + 1);
-          charIndex++;
-        }
-
-        if (!isDeleting && charIndex === currentTitle.length) {
-          setTimeout(() => (isDeleting = true), 1500);
-        } else if (isDeleting && charIndex === 0) {
-          isDeleting = false;
-          titleIndex = (titleIndex + 1) % titles.length;
-        }
-
-        const typingSpeed = isDeleting ? 50 : 100;
-        setTimeout(typeEffect, typingSpeed);
-      }
-
-      // Start typing effect after page load
-      setTimeout(typeEffect, 1000);
-    </script>
+    <script src="script.js"></script>
   </body>
 </html>
