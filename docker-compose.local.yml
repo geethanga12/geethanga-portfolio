@@ -1,0 +1,30 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: portfolio-local-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: portfolio_db
+      MYSQL_USER: portfolio_user
+      MYSQL_PASSWORD: portfolio_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - portfolio_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: portfolio-local-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  portfolio_mysql_data:

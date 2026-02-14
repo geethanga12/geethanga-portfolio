@@ -1,0 +1,17 @@
+[Unit]
+Description=Geethanga Portfolio Backend
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/geethanga.me/current/backend
+Environment=NODE_ENV=production
+EnvironmentFile=/var/www/geethanga.me/shared/backend.env
+ExecStart=/usr/bin/npm run start
+Restart=always
+RestartSec=5
+User=ubuntu
+Group=ubuntu
+
+[Install]
+WantedBy=multi-user.target
