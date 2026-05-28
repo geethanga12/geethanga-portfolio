@@ -1,5 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { CASE_STUDIES } from '../data/projects';
+import SEO from '../components/SEO';
+import { SITE_URL } from '../data/site';
 
 const ProjectDetailsPage = () => {
   const { slug } = useParams();
@@ -7,25 +9,42 @@ const ProjectDetailsPage = () => {
 
   if (!study) {
     return (
-      <main className="relative z-10 min-h-screen px-4 pt-32 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <h1 className="mb-4 text-3xl font-bold">Case Study Not Found</h1>
-          <p className="mb-6 text-slate-600 dark:text-slate-300">
-            The requested case study is not available.
-          </p>
-          <Link
-            to="/#projects"
-            className="inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white transition hover:bg-indigo-700"
-          >
-            Back to Projects
-          </Link>
-        </div>
-      </main>
+      <>
+        <SEO
+          title="Case Study Not Found · Geethanga Dissanayake"
+          description="The requested case study is not available."
+          noIndex
+        />
+        <main className="relative z-10 min-h-screen px-4 pt-32 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h1 className="mb-4 text-3xl font-bold">Case Study Not Found</h1>
+            <p className="mb-6 text-slate-600 dark:text-slate-300">
+              The requested case study is not available.
+            </p>
+            <Link
+              to="/#projects"
+              className="inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white transition hover:bg-indigo-700"
+            >
+              Back to Projects
+            </Link>
+          </div>
+        </main>
+      </>
     );
   }
 
+  const metaDesc = study.problem.length > 155
+    ? study.problem.slice(0, 152) + '…'
+    : study.problem;
+
   return (
-    <main className="relative z-10 min-h-screen px-4 pt-28 sm:px-6 lg:px-8">
+    <>
+      <SEO
+        title={`${study.title} — Case Study · Geethanga Dissanayake`}
+        description={metaDesc}
+        canonical={`${SITE_URL}/projects/${study.slug}`}
+      />
+      <main className="relative z-10 min-h-screen px-4 pt-28 sm:px-6 lg:px-8">
       <article className="mx-auto max-w-4xl space-y-8 rounded-2xl border border-slate-200 bg-white/95 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/95 sm:p-10">
         <header className="space-y-3">
           <p className="text-sm font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-400">
@@ -97,6 +116,7 @@ const ProjectDetailsPage = () => {
         </footer>
       </article>
     </main>
+    </>
   );
 };
 

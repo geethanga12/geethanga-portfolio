@@ -1,4 +1,5 @@
 export type ProjectCategory = 'internship' | 'personal' | 'academic';
+export type ProjectType = 'full-stack' | 'frontend' | 'backend';
 
 export interface ProjectLink {
   name: string;
@@ -13,6 +14,7 @@ export interface Project {
   tags: string[];
   links: ProjectLink[];
   category: ProjectCategory;
+  type?: ProjectType;
   featured?: boolean;
   caseStudyAvailable?: boolean;
 }
