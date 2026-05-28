@@ -27,6 +27,7 @@ export default {
         'slide-in': 'slideIn 0.6s ease-out',
         'fade-in': 'fadeIn 0.8s ease-out',
         'bounce-slow': 'bounce 3s infinite',
+        'twinkle': 'twinkle 3s ease-in-out infinite',
       },
       keyframes: {
         float: {
@@ -44,6 +45,10 @@ export default {
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
+        },
+        twinkle: {
+          '0%, 100%': { opacity: '0.2', transform: 'scale(1)' },
+          '50%': { opacity: '1', transform: 'scale(1.4)' },
         },
       },
     },

@@ -1,6 +1,5 @@
 import { useEffect, useState, Suspense, lazy } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
-import { Toaster } from 'react-hot-toast';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import SEO from './components/SEO';
@@ -41,9 +40,8 @@ function App() {
     <HelmetProvider>
       <div className="min-h-screen relative overflow-x-hidden">
         <SEO />
-        <Toaster position="bottom-right" />
 
-        {/* 3D Background */}
+        {/* Star Background */}
         <Suspense fallback={null}>
           <div className="fixed inset-0 z-0 pointer-events-none">
             <StarBackground />

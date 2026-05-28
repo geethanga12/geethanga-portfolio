@@ -1,20 +1,23 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { FaEnvelope, FaWhatsapp, FaLinkedin, FaGithub, FaPaperPlane } from 'react-icons/fa';
-import toast from 'react-hot-toast';
-import { API_BASE_URL, TURNSTILE_SITE_KEY } from '../config/env';
-import TurnstileWidget from './TurnstileWidget';
-import { ContactRequest, ContactResponse } from '../types/contact';
 
-const initialState: ContactRequest = {
+interface FormState {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+const initialState: FormState = {
   name: '',
   email: '',
   subject: '',
   message: '',
-  turnstileToken: '',
-  website: '',
 };
+
+const RECIPIENT_EMAIL = 'dissanayakegeethanga@gmail.com';
 
 const Contact = () => {
   const [ref, inView] = useInView({
@@ -22,16 +25,7 @@ const Contact = () => {
     threshold: 0.1,
   });
 
-  const [formData, setFormData] = useState<ContactRequest>(initialState);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleTokenChange = useCallback((token: string) => {
-    setFormData((prev) => ({ ...prev, turnstileToken: token }));
-  }, []);
-
-  const handleTurnstileExpire = useCallback(() => {
-    toast.error('Security token expired. Please complete it again.');
-  }, []);
+  const [formData, setFormData] = useState<FormState>(initialState);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -40,50 +34,12 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
-
-    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
-      toast.error('Please fill in all fields.');
-      return;
-    }
-
-    if (TURNSTILE_SITE_KEY && !formData.turnstileToken) {
-      toast.error('Please complete the security check.');
-      return;
-    }
-
-    const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 12000);
-
-    try {
-      setIsSubmitting(true);
-      const response = await fetch(`${API_BASE_URL}/contact`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
-        body: JSON.stringify(formData),
-      });
-
-      const payload = (await response.json()) as ContactResponse;
-      if (!response.ok || !payload.ok) {
-        toast.error(payload.message || 'Unable to send message right now.');
-        return;
-      }
-
-      toast.success(payload.message);
-      setFormData(initialState);
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') {
-        toast.error('Request timed out. Please try again.');
-      } else {
-        toast.error('Network error. Please try again.');
-      }
-    } finally {
-      window.clearTimeout(timeoutId);
-      setIsSubmitting(false);
-    }
+    const { name, email, subject, message } = formData;
+    const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
+    const mailtoUrl = `mailto:${RECIPIENT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoUrl;
   };
 
   const contactInfo = [
@@ -192,18 +148,6 @@ const Contact = () => {
           <motion.div variants={itemVariants} className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
             <h3 className="text-2xl font-semibold mb-6">Send Message</h3>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="hidden">
-                <label htmlFor="website">Website</label>
-                <input
-                  type="text"
-                  id="website"
-                  name="website"
-                  value={formData.website}
-                  onChange={handleChange}
-                  autoComplete="off"
-                  tabIndex={-1}
-                />
-              </div>
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-2">
                   Name
@@ -261,21 +205,14 @@ const Contact = () => {
                 ></textarea>
               </div>
 
-              <TurnstileWidget
-                siteKey={TURNSTILE_SITE_KEY}
-                onTokenChange={handleTokenChange}
-                onExpire={handleTurnstileExpire}
-              />
-
               <motion.button
                 type="submit"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                disabled={isSubmitting}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
               >
                 <FaPaperPlane />
-                {isSubmitting ? 'Sending...' : 'Send Message'}
+                Send Message
               </motion.button>
             </form>
           </motion.div>
