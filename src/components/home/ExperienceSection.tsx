@@ -1,3 +1,5 @@
+'use client';
+
 import { useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { FaBriefcase, FaMapMarkerAlt } from 'react-icons/fa';

@@ -1,5 +1,6 @@
+'use client';
+
 import { useState, useRef, useId } from 'react';
-import { SITE_URL } from '../data/site';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import {
   FaEnvelope,
@@ -13,18 +14,12 @@ import {
   FiAlertCircle,
   FiCheckCircle,
 } from 'react-icons/fi';
-import SEO from '../components/SEO';
-
-/* ─── Constants ─────────────────────────────────────────────────────────── */
 
 const RECIPIENT_EMAIL = 'dissanayakegeethanga@gmail.com';
 
-/** Contact API base URL (set VITE_CONTACT_API_URL in .env; empty = same origin) */
-const CONTACT_API = (import.meta.env.VITE_CONTACT_API_URL ?? '').replace(/\/$/, '');
+const CONTACT_API = (process.env.NEXT_PUBLIC_CONTACT_API_URL ?? '').replace(/\/$/, '');
 
 type SubmitStatus = 'idle' | 'submitting' | 'success' | 'error';
-
-/* ─── Contact method cards ──────────────────────────────────────────────── */
 
 interface ContactMethod {
   icon: React.ElementType;
@@ -70,8 +65,6 @@ const METHODS: ContactMethod[] = [
   },
 ];
 
-/* ─── Form ──────────────────────────────────────────────────────────────── */
-
 interface FormValues {
   name: string;
   email: string;
@@ -93,8 +86,6 @@ function validate(v: FormValues): Partial<Record<keyof FormValues, string>> {
                          e.message = 'Message must be at least 10 characters.';
   return e;
 }
-
-/* ─── Field component ───────────────────────────────────────────────────── */
 
 interface FieldProps {
   id: string;
@@ -141,22 +132,26 @@ const INPUT_BASE =
 const INPUT_NORMAL = `${INPUT_BASE} border-[var(--border)]`;
 const INPUT_ERROR  = `${INPUT_BASE} border-[#ef4444] focus:border-[#ef4444] focus:ring-[#ef4444]/20`;
 
-/* ─── Page ──────────────────────────────────────────────────────────────── */
-
-const ContactPage = () => {
+export default function ContactPage() {
   const uid = useId();
   const [values,  setValues]  = useState<FormValues>(EMPTY);
   const [errors,  setErrors]  = useState<Partial<Record<keyof FormValues, string>>>({});
   const [touched, setTouched] = useState<Partial<Record<keyof FormValues, boolean>>>({});
   const [status,  setStatus]  = useState<SubmitStatus>('idle');
   const [serverError, setServerError] = useState('');
-  const [company, setCompany] = useState(''); // honeypot — must stay empty
+  const [company, setCompany] = useState('');
 
   const headerRef = useRef<HTMLElement>(null);
   const formRef   = useRef<HTMLElement>(null);
   const headerInView = useInView(headerRef, { once: true });
   const formInView   = useInView(formRef,   { once: true, margin: '-6%' });
   const shouldReduce = useReducedMotion();
+
+  const fieldCls = (name: keyof FormValues) =>
+    touched[name] && errors[name] ? INPUT_ERROR : INPUT_NORMAL;
+
+  const ariaDesc = (name: keyof FormValues) =>
+    touched[name] && errors[name] ? `${uid}-${name}-error` : undefined;
 
   const fadeUp = (inView: boolean, delay: number) => ({
     initial: { opacity: 0, y: shouldReduce ? 0 : 16 },
@@ -185,7 +180,6 @@ const ContactPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Mark all as touched and re-validate
     setTouched({ name: true, email: true, subject: true, message: true });
     const errs = validate(values);
     setErrors(errs);
@@ -227,21 +221,8 @@ const ContactPage = () => {
     }
   };
 
-  const fieldCls = (key: keyof FormValues) =>
-    touched[key] && errors[key] ? INPUT_ERROR : INPUT_NORMAL;
-
-  const ariaDesc = (key: keyof FormValues) =>
-    touched[key] && errors[key] ? `${uid}-${key}-error` : undefined;
-
   return (
     <>
-      <SEO
-        title="Contact — Geethanga Dissanayake"
-        description="Get in touch with Geethanga Dissanayake for freelance projects, collaborations, or job opportunities. Available via email, WhatsApp, and LinkedIn."
-        canonical={`${SITE_URL}/contact`}
-      />
-
-      {/* ── Header ──────────────────────────────────────────────────────── */}
       <section
         ref={headerRef}
         className="section-spacing-sm"
@@ -254,12 +235,11 @@ const ContactPage = () => {
               Contact
             </h1>
             <p className="section-desc mt-3 max-w-lg">
-              Let's build something useful. Whether it's a project idea,
-              a freelance enquiry, or just saying hello — I'm happy to hear from you.
+              Let&apos;s build something useful. Whether it&apos;s a project idea,
+              a freelance enquiry, or just saying hello — I&apos;m happy to hear from you.
             </p>
           </motion.div>
 
-          {/* Quick CTA buttons */}
           <motion.div
             {...fadeUp(headerInView, 0.15)}
             className="mt-6 flex flex-wrap gap-3"
@@ -293,7 +273,6 @@ const ContactPage = () => {
         </div>
       </section>
 
-      {/* ── Cards + Form ────────────────────────────────────────────────── */}
       <section
         ref={formRef}
         className="pb-20 pt-4"
@@ -302,7 +281,6 @@ const ContactPage = () => {
         <div className="container-page">
           <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_1.4fr] lg:gap-8">
 
-            {/* ── Left: contact method cards ────────────────────────── */}
             <motion.div {...fadeUp(formInView, 0)} className="flex flex-col gap-3">
               <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--text-secondary)] mb-1">
                 Reach Me On
@@ -323,7 +301,6 @@ const ContactPage = () => {
                                hover:bg-[var(--surface-raised)] hover:shadow-md"
                     aria-label={`${m.label}: ${m.value}`}
                   >
-                    {/* Icon badge */}
                     <span
                       className={`shrink-0 inline-flex items-center justify-center
                                   w-10 h-10 rounded-lg ${m.iconBg} ${m.iconClass}
@@ -352,13 +329,11 @@ const ContactPage = () => {
               })}
             </motion.div>
 
-            {/* ── Right: form ───────────────────────────────────────── */}
             <motion.div {...fadeUp(formInView, 0.1)}>
               <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-raised)] p-6 shadow-sm sm:p-8">
                 <h2 className="mb-1 text-base font-bold text-[var(--text)]">
                   Send a message
                 </h2>
-                {/* Disclosure */}
                 <p className="mb-6 text-xs leading-relaxed text-[var(--text-secondary)]">
                   Your message is sent securely to my inbox — I usually reply within 24 hours.
                 </p>
@@ -390,7 +365,6 @@ const ContactPage = () => {
                   aria-label="Contact form"
                   className="flex flex-col gap-5"
                 >
-                  {/* Honeypot — hidden from real users, catches bots */}
                   <input
                     type="text"
                     name="company"
@@ -402,7 +376,6 @@ const ContactPage = () => {
                     className="absolute left-[-9999px] h-0 w-0 opacity-0"
                   />
 
-                  {/* Name + Email */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <Field
                       id={`${uid}-name`}
@@ -449,7 +422,6 @@ const ContactPage = () => {
                     </Field>
                   </div>
 
-                  {/* Subject */}
                   <Field
                     id={`${uid}-subject`}
                     label="Subject"
@@ -471,7 +443,6 @@ const ContactPage = () => {
                     />
                   </Field>
 
-                  {/* Message */}
                   <Field
                     id={`${uid}-message`}
                     label="Message"
@@ -493,7 +464,6 @@ const ContactPage = () => {
                     />
                   </Field>
 
-                  {/* Server error */}
                   {status === 'error' && serverError && (
                     <p
                       role="alert"
@@ -504,7 +474,6 @@ const ContactPage = () => {
                     </p>
                   )}
 
-                  {/* Submit */}
                   <div className="flex flex-col items-start gap-3 pt-1 sm:flex-row sm:items-center">
                     <button
                       type="submit"
@@ -540,6 +509,4 @@ const ContactPage = () => {
       </section>
     </>
   );
-};
-
-export default ContactPage;
+}

@@ -1,5 +1,7 @@
+'use client';
+
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import {
   FiExternalLink,
@@ -124,7 +126,7 @@ function PremiumCard({ project, rank }: { project: Project; rank: string }) {
       {/* ── Body ─────────────────────────────────────────────── */}
       <div className="flex flex-1 flex-col gap-3 p-5 sm:p-6">
         <Link
-          to={primaryHref}
+          href={primaryHref}
           target={primaryHref.startsWith('http') ? '_blank' : undefined}
           rel={primaryHref.startsWith('http') ? 'noopener noreferrer' : undefined}
           className="flex items-start justify-between gap-3 focus-ring rounded-md"
@@ -201,7 +203,7 @@ function PremiumCard({ project, rank }: { project: Project; rank: string }) {
 
           {hasCase && (
             <Link
-              to={`/projects/${project.slug}`}
+              href={`/projects/${project.slug}`}
               aria-label={`${project.title} — case study`}
               className={`${pillBase} border-[var(--accent)]/30 bg-[var(--accent-subtle)] text-[var(--accent)] hover:bg-[var(--accent)]/15`}
             >
@@ -247,7 +249,7 @@ export default function FeaturedProjects() {
             </p>
           </div>
 
-          <Link to="/projects" className="btn btn-secondary btn-sm shrink-0 self-start sm:self-auto">
+          <Link href="/projects" className="btn btn-secondary btn-sm shrink-0 self-start sm:self-auto">
             View All Projects
             <FiArrowRight size={14} aria-hidden />
           </Link>
@@ -264,7 +266,7 @@ export default function FeaturedProjects() {
 
         {/* Bottom CTA */}
         <motion.div {...fadeUp(0.5)} className="mt-10 flex justify-center">
-          <Link to="/projects" className="btn btn-ghost btn-sm text-[var(--text-secondary)] hover:text-[var(--text)]">
+          <Link href="/projects" className="btn btn-ghost btn-sm text-[var(--text-secondary)] hover:text-[var(--text)]">
             See all {PROJECTS.length} projects
             <FiArrowRight size={14} aria-hidden />
           </Link>

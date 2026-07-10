@@ -1,18 +1,18 @@
+'use client';
+
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaSun, FaMoon, FaBars, FaTimes, FaGithub, FaLinkedin } from 'react-icons/fa';
 import { NAV_LINKS } from '../../data/navigation';
+import { useTheme } from '../ThemeProvider';
 
-interface NavbarProps {
-  darkMode: boolean;
-  toggleDarkMode: () => void;
-}
-
-const Navbar = ({ darkMode, toggleDarkMode }: NavbarProps) => {
+const Navbar = () => {
+  const { darkMode, toggleDarkMode } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const location = useLocation();
+  const pathname = usePathname() || '/';
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -27,7 +27,7 @@ const Navbar = ({ darkMode, toggleDarkMode }: NavbarProps) => {
   // ── Close menu on route change ────────────────────────────
   useEffect(() => {
     setMenuOpen(false);
-  }, [location.pathname]);
+  }, [pathname]);
 
   // ── Body scroll lock ──────────────────────────────────────
   useEffect(() => {
@@ -96,7 +96,7 @@ const Navbar = ({ darkMode, toggleDarkMode }: NavbarProps) => {
           >
             {/* ── Logo ───────────────────────────────────────────── */}
             <Link
-              to="/"
+              href="/"
               className="group flex flex-shrink-0 items-center gap-2.5 rounded-lg py-1 focus-ring"
               aria-label="Geethanga Dissanayake — Home"
             >
@@ -121,24 +121,24 @@ const Navbar = ({ darkMode, toggleDarkMode }: NavbarProps) => {
                          border border-[var(--border)] bg-[var(--surface)]/80 px-2 py-1.5 backdrop-blur-sm lg:flex"
               aria-label="Primary navigation"
             >
-              {NAV_LINKS.map((link) => (
-                <NavLink
-                  key={link.path}
-                  to={link.path}
-                  end={link.path === '/'}
-                  className={({ isActive }) =>
-                    [
+              {NAV_LINKS.map((link) => {
+                const isActive = link.path === '/' ? pathname === '/' : pathname.startsWith(link.path);
+                return (
+                  <Link
+                    key={link.path}
+                    href={link.path}
+                    className={[
                       'rounded-full px-4 py-[7px] text-[14px] font-medium leading-none',
                       'transition-all duration-150 focus-ring',
                       isActive
                         ? 'bg-[var(--accent-subtle)] text-[var(--accent)]'
                         : 'text-[var(--text-secondary)] hover:bg-[var(--surface-raised)] hover:text-[var(--text)]',
-                    ].join(' ')
-                  }
-                >
-                  {link.label}
-                </NavLink>
-              ))}
+                    ].join(' ')}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* ── Right: Controls ────────────────────────────────── */}
@@ -191,7 +191,7 @@ const Navbar = ({ darkMode, toggleDarkMode }: NavbarProps) => {
                 </button>
 
                 <Link
-                  to="/contact"
+                  href="/contact"
                   className="ml-1 inline-flex items-center gap-1.5 rounded-full bg-[var(--accent)] px-5 py-[9px]
                              text-[14px] font-semibold leading-none text-white shadow-[0_2px_8px_rgba(99,102,241,0.45)]
                              transition-colors hover:bg-[var(--accent-hover)] focus-ring"
@@ -292,24 +292,24 @@ const Navbar = ({ darkMode, toggleDarkMode }: NavbarProps) => {
             >
               {/* Nav links */}
               <nav className="flex flex-col gap-0.5 p-2" aria-label="Mobile navigation">
-                {NAV_LINKS.map((link) => (
-                  <NavLink
-                    key={link.path}
-                    to={link.path}
-                    end={link.path === '/'}
-                    className={({ isActive }) =>
-                      [
+                {NAV_LINKS.map((link) => {
+                  const isActive = link.path === '/' ? pathname === '/' : pathname.startsWith(link.path);
+                  return (
+                    <Link
+                      key={link.path}
+                      href={link.path}
+                      className={[
                         'flex items-center rounded-xl px-4 py-3 text-[15px] font-medium',
                         'transition-all duration-150 focus-ring',
                         isActive
                           ? 'bg-[var(--accent-subtle)] text-[var(--accent)]'
                           : 'text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text)]',
-                      ].join(' ')
-                    }
-                  >
-                    {link.label}
-                  </NavLink>
-                ))}
+                      ].join(' ')}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
               </nav>
 
               {/* Footer row */}
@@ -340,7 +340,7 @@ const Navbar = ({ darkMode, toggleDarkMode }: NavbarProps) => {
                 </div>
 
                 <Link
-                  to="/contact"
+                  href="/contact"
                   className="flex max-w-[160px] flex-1 items-center justify-center rounded-xl bg-[var(--accent)]
                              px-4 py-2.5 text-sm font-semibold text-white shadow-[0_1px_4px_rgba(99,102,241,0.4)]
                              transition-colors hover:bg-[var(--accent-hover)] focus-ring"
