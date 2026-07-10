@@ -1,6 +1,8 @@
+'use client';
+
 import { Fragment } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import {
   FaGithub,
   FaLinkedin,
@@ -157,7 +159,7 @@ const Hero = () => {
           {/* ── CTA buttons ────────────────────────────────────── */}
           <motion.div variants={item} className="flex flex-wrap justify-center gap-2.5">
             <Link
-              to="/projects"
+              href="/projects"
               className="btn btn-primary btn-sm focus-ring"
             >
               View Projects
@@ -165,7 +167,7 @@ const Hero = () => {
             </Link>
 
             <Link
-              to="/contact"
+              href="/contact"
               className="btn btn-secondary btn-sm focus-ring"
             >
               Contact Me

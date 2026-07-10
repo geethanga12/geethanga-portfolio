@@ -36,3 +36,5 @@ backend/.env
 
 # Production
 build
+.next
+out

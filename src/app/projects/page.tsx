@@ -1,6 +1,7 @@
+'use client';
+
 import { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { SITE_URL } from '../data/site';
+import Link from 'next/link';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import {
   FiExternalLink,
@@ -10,9 +11,8 @@ import {
   FiLayers,
   FiBox,
 } from 'react-icons/fi';
-import SEO from '../components/SEO';
-import { PROJECTS } from '../data/projects';
-import type { Project, ProjectLink, ProjectType } from '../types/project';
+import { PROJECTS } from '../../data/projects';
+import type { Project, ProjectLink, ProjectType } from '../../types/project';
 
 /* ─── Filter config ─────────────────────────────────────────────────────── */
 
@@ -100,7 +100,6 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
       transition={{ duration: 0.45, delay: 0.04 + (index % 6) * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}
       className="card-premium group flex h-full flex-col"
     >
-      {/* ── Media header ─────────────────────────────────────── */}
       <div className="relative aspect-[16/9] overflow-hidden">
         <img
           src={project.image}
@@ -114,14 +113,12 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
           aria-hidden
         />
 
-        {/* Featured star */}
         {project.featured && (
           <span className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-full bg-black/45 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm ring-1 ring-white/20">
             ★ Featured
           </span>
         )}
 
-        {/* Type badge */}
         {project.type && (
           <span
             className={`absolute right-4 top-4 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider backdrop-blur-sm ${TYPE_BADGE[project.type]}`}
@@ -131,10 +128,9 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
         )}
       </div>
 
-      {/* ── Body ─────────────────────────────────────────────── */}
       <div className="flex flex-1 flex-col gap-3 p-5 sm:p-6">
         <Link
-          to={primaryHref}
+          href={primaryHref}
           target={primaryHref.startsWith('http') ? '_blank' : undefined}
           rel={primaryHref.startsWith('http') ? 'noopener noreferrer' : undefined}
           className="flex items-start justify-between gap-3 focus-ring rounded-md"
@@ -150,14 +146,12 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
           />
         </Link>
 
-        {/* Category */}
         <span className="-mt-1 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
           {CAT_LABEL[project.category]}
         </span>
 
         <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{project.description}</p>
 
-        {/* Tech tags */}
         <div className="mt-auto flex flex-wrap gap-1.5 pt-1" role="list" aria-label="Technologies">
           {project.tags.map((tag) => (
             <span
@@ -170,7 +164,6 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
           ))}
         </div>
 
-        {/* Links */}
         {(liveLinks.length > 0 || githubLinks.length > 0 || project.caseStudyAvailable) && (
           <div className="flex flex-wrap gap-2 pt-1">
             {liveLinks.map((link) => (
@@ -216,7 +209,7 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
 
             {project.caseStudyAvailable && (
               <Link
-                to={`/projects/${project.slug}`}
+                href={`/projects/${project.slug}`}
                 aria-label={`${project.title} — case study`}
                 className={`${pillBase} border-[var(--accent)]/30 bg-[var(--accent-subtle)] text-[var(--accent)] hover:bg-[var(--accent)]/15`}
               >
@@ -233,7 +226,7 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
 
 /* ─── Page ──────────────────────────────────────────────────────────────── */
 
-const ProjectsPage = () => {
+export default function ProjectsPage() {
   const [activeFilter, setActiveFilter] = useState<FilterKey>('all');
   const filtered = applyFilter(PROJECTS, activeFilter);
 
@@ -251,13 +244,6 @@ const ProjectsPage = () => {
 
   return (
     <>
-      <SEO
-        title="Projects — Geethanga Dissanayake"
-        description="Full-stack, frontend, and production-style web projects by Geethanga Dissanayake — Spring Boot, React, Next.js, MySQL, AWS and more."
-        canonical={`${SITE_URL}/projects`}
-      />
-
-      {/* ── Header ──────────────────────────────────────────────────────── */}
       <section className="section-spacing-sm" aria-labelledby="archive-heading">
         <div className="container-wide">
           <div ref={headerRef} className="max-w-3xl">
@@ -273,7 +259,6 @@ const ProjectsPage = () => {
               </p>
             </motion.div>
 
-            {/* Stats row */}
             <motion.div
               {...fadeUp(headerInView, 0.15)}
               className="mt-8 flex flex-wrap gap-3"
@@ -297,10 +282,8 @@ const ProjectsPage = () => {
         </div>
       </section>
 
-      {/* ── Archive grid ────────────────────────────────────────────────── */}
       <section ref={listRef} className="section-spacing-sm pb-20" aria-label="Project list">
         <div className="container-wide">
-          {/* Filter bar */}
           <motion.div
             {...fadeUp(listInView, 0)}
             className="mb-5 flex flex-wrap gap-2 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-2"
@@ -336,15 +319,13 @@ const ProjectsPage = () => {
             })}
           </motion.div>
 
-          {/* Results count */}
           <p className="mb-6 text-xs tabular-nums text-[var(--text-secondary)]" aria-live="polite">
             {filtered.length} {filtered.length === 1 ? 'project' : 'projects'}
             {activeFilter !== 'all' && (
-              <> matching <span className="font-medium text-[var(--text)]">"{FILTERS.find((f) => f.key === activeFilter)?.label}"</span></>
+              <> matching <span className="font-medium text-[var(--text)]">&quot;{FILTERS.find((f) => f.key === activeFilter)?.label}&quot;</span></>
             )}
           </p>
 
-          {/* Cards */}
           {filtered.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {filtered.map((project, i) => (
@@ -357,7 +338,6 @@ const ProjectsPage = () => {
               ))}
             </div>
           ) : (
-            /* Empty state */
             <div
               className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-8 py-16 text-center"
               role="status"
@@ -380,6 +360,4 @@ const ProjectsPage = () => {
       </section>
     </>
   );
-};
-
-export default ProjectsPage;
+}

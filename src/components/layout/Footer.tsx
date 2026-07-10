@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { FaGithub, FaLinkedin, FaEnvelope, FaWhatsapp } from 'react-icons/fa';
 import { NAV_LINKS } from '../../data/navigation';
 import { SITE_NAME } from '../../data/site';
@@ -36,7 +36,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="flex flex-col items-center md:items-start gap-1">
             <Link
-              to="/"
+              href="/"
               className="text-xl font-bold text-gradient focus-ring rounded"
               aria-label="Home"
             >
@@ -50,7 +50,7 @@ const Footer = () => {
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.path}
-                to={link.path}
+                href={link.path}
                 className="px-3 py-1.5 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-[var(--surface)] rounded-lg transition-all focus-ring"
               >
                 {link.label}

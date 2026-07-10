@@ -1,6 +1,7 @@
+'use client';
+
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { SITE_URL } from '../data/site';
+import Link from 'next/link';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import {
   FiCode,
@@ -19,7 +20,6 @@ import {
   FiMonitor,
   FiBook,
 } from 'react-icons/fi';
-import SEO from '../components/SEO';
 
 /* ─── Data ──────────────────────────────────────────────────────────────── */
 
@@ -137,7 +137,6 @@ const PROCESS: ProcessStep[] = [
 
 /* ─── Sub-components ────────────────────────────────────────────────────── */
 
-/** Rotating icon-tile tints so the grid feels varied like the reference. */
 const TILE_TINTS = [
   'bg-[var(--accent-subtle)] text-[var(--accent)]',
   'bg-[var(--blue-subtle)] text-[var(--blue-text)]',
@@ -166,7 +165,6 @@ function ServiceCard({
       transition={{ duration: 0.5, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
       className="card-premium group flex h-full flex-col gap-4 p-6"
     >
-      {/* Icon */}
       <span
         className={`inline-flex h-12 w-12 items-center justify-center rounded-xl
                    transition-transform duration-300 group-hover:scale-110 ${tint}`}
@@ -175,7 +173,6 @@ function ServiceCard({
         <Icon size={22} />
       </span>
 
-      {/* Text */}
       <div className="flex-1">
         <h3 className="mb-1.5 text-base font-bold leading-snug text-[var(--text)] transition-colors group-hover:text-[var(--accent)]">
           {service.title}
@@ -185,7 +182,6 @@ function ServiceCard({
         </p>
       </div>
 
-      {/* Tags */}
       <div className="flex flex-wrap gap-1.5" role="list" aria-label="Technologies">
         {service.tags.map((tag) => (
           <span
@@ -209,7 +205,7 @@ function useSection() {
   return { ref, inView };
 }
 
-const ServicesPage = () => {
+export default function ServicesPage() {
   const servicesSection = useSection();
   const processSection = useSection();
   const ctaSection = useSection();
@@ -223,13 +219,6 @@ const ServicesPage = () => {
 
   return (
     <>
-      <SEO
-        title="Services — Geethanga Dissanayake"
-        description="Full-stack web development services — custom web apps, REST APIs, LMS platforms, e-commerce systems, dashboards, and cloud deployment by Geethanga Dissanayake."
-        canonical={`${SITE_URL}/services`}
-      />
-
-      {/* ── Page header ─────────────────────────────────────────────────── */}
       <section className="section-spacing-sm" aria-labelledby="services-page-heading">
         <div className="container-page">
           <motion.div
@@ -252,7 +241,6 @@ const ServicesPage = () => {
         </div>
       </section>
 
-      {/* ── Services grid ───────────────────────────────────────────────── */}
       <section
         ref={servicesSection.ref}
         className="section-spacing-sm"
@@ -274,7 +262,6 @@ const ServicesPage = () => {
         </div>
       </section>
 
-      {/* ── Process ─────────────────────────────────────────────────────── */}
       <section
         ref={processSection.ref}
         className="section-spacing"
@@ -302,7 +289,6 @@ const ServicesPage = () => {
                              bg-[var(--surface)] px-5 py-5 transition-all duration-200
                              hover:-translate-y-1 hover:border-[var(--border-strong)] hover:bg-[var(--surface-raised)] hover:shadow-md"
                 >
-                  {/* Step number */}
                   <span
                     className="shrink-0 font-mono text-xs font-bold tabular-nums
                                text-[var(--accent)] opacity-50 select-none mt-0.5 w-6"
@@ -333,7 +319,6 @@ const ServicesPage = () => {
         </div>
       </section>
 
-      {/* ── CTA ─────────────────────────────────────────────────────────── */}
       <section
         ref={ctaSection.ref}
         className="section-spacing"
@@ -346,7 +331,6 @@ const ServicesPage = () => {
                        border border-[var(--border)] bg-[var(--surface-raised)]
                        px-6 py-14 text-center sm:px-8"
           >
-            {/* Soft radial accent backdrop */}
             <div
               className="pointer-events-none absolute inset-0 -z-10 opacity-70"
               style={{
@@ -355,10 +339,8 @@ const ServicesPage = () => {
               }}
               aria-hidden
             />
-            {/* Eyebrow */}
-            <p className="section-eyebrow">Let's Build Together</p>
+            <p className="section-eyebrow">Let&apos;s Build Together</p>
 
-            {/* Heading */}
             <h2
               id="cta-heading"
               className="section-title max-w-md"
@@ -367,14 +349,13 @@ const ServicesPage = () => {
             </h2>
 
             <p className="section-desc max-w-sm">
-              I'm open to freelance projects and new opportunities. Reach out and
-              let's talk about what you need.
+              I&apos;m open to freelance projects and new opportunities. Reach out and
+              let&apos;s talk about what you need.
             </p>
 
-            {/* Buttons */}
             <div className="flex flex-wrap justify-center gap-3">
               <Link
-                to="/contact"
+                href="/contact"
                 className="btn btn-primary btn-sm"
               >
                 Contact Me
@@ -399,6 +380,4 @@ const ServicesPage = () => {
       </section>
     </>
   );
-};
-
-export default ServicesPage;
+}
