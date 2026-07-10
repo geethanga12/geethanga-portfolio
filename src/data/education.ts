@@ -1,20 +1,44 @@
-import { EducationEntry } from '../types/education';
+import type { EducationEntry } from '../types/education';
 
 export const EDUCATION: EducationEntry[] = [
   {
     degree: 'BSc (Hons) Computer Science (Software Engineering)',
     institution: 'University of Wolverhampton',
-    period: '2024 - 2025',
+    location: 'Wolverhampton, UK (via CINEC Campus, Sri Lanka)',
+    period: '2024 – 2025',
+    type: 'degree',
+    grade: 'Second Class (Upper Division)',
     description:
-      'Focused on software engineering principles, scalable system design, and modern application development workflows.',
-    institutionColorClass: 'text-indigo-600 dark:text-indigo-400',
+      'Honours degree deepening expertise in advanced software engineering, distributed systems, and professional development practices.',
+    highlights: [
+      'Software Engineering & Architecture',
+      'Scalable System Design',
+      'Professional Development & Research Methods',
+    ],
   },
   {
-    degree: 'Pearson BTEC HND in Computing (Software Engineering)',
+    degree: 'Pearson BTEC Level 5 HND in Computing (Software Engineering)',
     institution: 'CINEC Campus',
-    period: '2022 - 2024',
+    location: 'Colombo, Sri Lanka',
+    period: '2022 – 2024',
+    type: 'diploma',
     description:
-      'Built strong foundations in programming, data structures, database systems, and practical software project execution.',
-    institutionColorClass: 'text-green-600 dark:text-green-400',
+      'Comprehensive two-year programme covering full-stack development fundamentals, database engineering, and software project lifecycle management.',
+    highlights: [
+      'Object-Oriented Programming & Design Patterns',
+      'Database Design & SQL',
+      'Web & Mobile Application Development',
+      'Agile Project Management',
+    ],
+  },
+  {
+    degree: 'Full-Stack Developer Trainee',
+    institution: 'Academy of Computer Programming and Training (ACPT)',
+    period: 'Feb 2025 – Aug 2025 · 7 mos',
+    type: 'training',
+    bullets: [
+      'Completed an intensive Advanced Full Stack program covering React, React Native, Spring Boot, and AWS deployment, building production-deployable applications throughout.',
+      'Developed SmartBiz, an AI-powered ERP-lite system for SMEs, integrating the Gemini API for analytics and deploying the full stack on AWS EC2 with Cloudflare.',
+    ],
   },
 ];

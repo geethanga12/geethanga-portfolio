@@ -1,15 +1,15 @@
-import { CaseStudy, Project } from '../types/project';
+import type { CaseStudy, Project } from '../types/project';
 
 export const PROJECTS: Project[] = [
   {
     slug: 'smartbiz',
     title: 'SmartBiz: AI-Powered Business Management Suite for SMEs',
     description:
-      'Full-stack ERP-lite with sales, inventory, supplier, customer, and expense workflows. Built for practical SME operations with AI roadmap support.',
-    image:
-      'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=1200&h=600&fit=crop',
-    tags: ['Spring Boot', 'React', 'React Native', 'MySQL', 'AWS'],
+      'Unified ERP-lite covering sales, inventory, supplier management, customer records, and expense tracking — built to replace fragmented spreadsheet workflows for small businesses. Deployed on AWS with a React web app and React Native mobile companion.',
+    image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=1200&h=600&fit=crop',
+    tags: ['Spring Boot', 'React', 'React Native', 'MySQL', 'AWS EC2', 'REST API'],
     category: 'personal',
+    type: 'full-stack',
     featured: true,
     caseStudyAvailable: true,
     links: [
@@ -22,11 +22,11 @@ export const PROJECTS: Project[] = [
     slug: 'iclazz-education',
     title: 'iClazz: Education Management Platform',
     description:
-      'Internship project focused on class coordination workflows across student, tutor, and coordinator panels with calendar and attendance tooling.',
-    image:
-      'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&h=600&fit=crop',
-    tags: ['React', 'Spring Boot', 'MySQL', 'JWT', 'Role-Based Access'],
+      'Role-gated LMS serving students, tutors, class coordinators, and directors. Implements a complete class request lifecycle — from booking through tutor assignment to attendance and payment tracking — with calendar integration. Delivered to production during internship.',
+    image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&h=600&fit=crop',
+    tags: ['React', 'Spring Boot', 'MySQL', 'JWT', 'FullCalendar', 'Role-Based Access'],
     category: 'internship',
+    type: 'full-stack',
     featured: true,
     caseStudyAvailable: true,
     links: [{ name: 'Live Site', url: 'https://iclazzeducation.com/' }],
@@ -35,24 +35,24 @@ export const PROJECTS: Project[] = [
     slug: 'royal-weddings',
     title: 'RoyalWeddings.lk',
     description:
-      'Production-grade wedding platform with modern UX, content workflows, and scalable architecture during internship delivery.',
-    image:
-      'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=600&fit=crop',
-    tags: ['Next.js', 'Prisma', 'Tailwind CSS', 'Auth', 'SEO'],
+      'Production wedding brand platform with componentized Next.js architecture, NextAuth authentication, Prisma ORM, and CMS-ready content workflows. Built with SEO-conscious structure, responsive UI, and Framer Motion polish — shipped to live production during internship.',
+    image: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=600&fit=crop',
+    tags: ['Next.js', 'Prisma', 'NextAuth', 'Tailwind CSS', 'Framer Motion', 'SEO'],
     category: 'internship',
+    type: 'full-stack',
     featured: true,
     caseStudyAvailable: true,
     links: [{ name: 'Live Site', url: 'https://royalweddings.lk/' }],
   },
   {
     slug: 'pathwise',
-    title: 'Pathwise',
+    title: 'Pathwise: AI-Assisted Career Guidance Platform',
     description:
-      'AI-assisted career guidance platform connecting student growth plans with employer-aligned hiring pathways.',
-    image:
-      'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&h=600&fit=crop',
-    tags: ['React', 'Spring Boot', 'AI Integration', 'MySQL', 'Analytics'],
+      'Dual-module platform connecting student career growth profiles with employer hiring pathways. Implements recommendation-ready data structures, structured profile dashboards, and AI-assisted matching logic to improve candidate-employer alignment beyond basic skill filters.',
+    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&h=600&fit=crop',
+    tags: ['React', 'Spring Boot', 'AI Integration', 'MySQL', 'Analytics', 'Vite'],
     category: 'internship',
+    type: 'full-stack',
     featured: true,
     caseStudyAvailable: true,
     links: [],
@@ -61,33 +61,33 @@ export const PROJECTS: Project[] = [
     slug: 'dictionary-web-app',
     title: 'Free Dictionary Web App',
     description:
-      'Responsive dictionary app integrating Free Dictionary API for definitions, pronunciation, and examples.',
-    image:
-      'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&h=600&fit=crop',
+      'Clean responsive dictionary application that queries the Free Dictionary API for word definitions, pronunciation audio, and usage examples. Features a polished search experience with Material UI components.',
+    image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&h=600&fit=crop',
     tags: ['React', 'Material UI', 'Axios', 'REST API'],
     category: 'personal',
+    type: 'frontend',
     links: [{ name: 'Repository', url: 'https://github.com/geethanga12/dictionary-webapp.git' }],
   },
   {
     slug: 'nic-checker',
-    title: 'NIC Detail Application',
+    title: 'Sri Lankan NIC Detail Application',
     description:
-      'Utility app to parse Sri Lankan NIC details in real time with a clean responsive interface.',
-    image:
-      'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&h=600&fit=crop',
+      'Real-time utility that decodes Sri Lankan National Identity Card numbers — extracting birth date, age, gender, and serial data — with a clean, fully responsive interface.',
+    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&h=600&fit=crop',
     tags: ['React', 'Tailwind CSS', 'React Router'],
     category: 'personal',
+    type: 'frontend',
     links: [{ name: 'Repository', url: 'https://github.com/geethanga12/Sri-Lankan-NIC-Checker.git' }],
   },
   {
     slug: 'cafeteria-automation',
     title: 'Cafeteria Automation System',
     description:
-      'Full-stack cafeteria platform with role-based workflows, secure auth, and order/menu management.',
-    image:
-      'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&h=600&fit=crop',
+      'Academic full-stack cafeteria management system with role-based access for staff and customers, secure authentication, menu configuration, and order processing workflows.',
+    image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&h=600&fit=crop',
     tags: ['PHP', 'MySQL', 'Bootstrap'],
     category: 'academic',
+    type: 'full-stack',
     links: [{ name: 'Repository', url: 'https://github.com/geethanga12/cas-cinec.git' }],
   },
 ];
