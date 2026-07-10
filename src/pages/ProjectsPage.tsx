@@ -6,6 +6,7 @@ import {
   FiExternalLink,
   FiGithub,
   FiFileText,
+  FiArrowUpRight,
   FiLayers,
   FiBox,
 } from 'react-icons/fi';
@@ -40,41 +41,23 @@ function applyFilter(projects: Project[], filter: FilterKey): Project[] {
 /* ─── Stats ─────────────────────────────────────────────────────────────── */
 
 const STATS = [
-  { label: 'Total Projects',   value: PROJECTS.length },
-  { label: 'Featured',         value: PROJECTS.filter((p) => p.featured).length },
+  { label: 'Total Projects',    value: PROJECTS.length },
+  { label: 'Featured',          value: PROJECTS.filter((p) => p.featured).length },
   { label: 'Full-Stack Builds', value: PROJECTS.filter((p) => p.type === 'full-stack').length },
 ];
 
 /* ─── Visual helpers ────────────────────────────────────────────────────── */
 
-const AVATAR_PALETTE = [
-  'bg-[var(--accent-subtle)] text-[var(--accent)]',
-  'bg-[var(--green-subtle)] text-[var(--green-text)]',
-  'bg-[var(--amber-subtle)] text-[var(--amber-text)]',
-  'bg-[var(--blue-subtle)] text-[var(--blue-text)]',
-];
-
-function avatarColor(slug: string): string {
-  const sum = slug.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
-  return AVATAR_PALETTE[sum % AVATAR_PALETTE.length];
-}
-
 const TYPE_BADGE: Record<ProjectType, string> = {
-  'full-stack': 'bg-[var(--accent-subtle)] text-[var(--accent)] border-[var(--accent)]/20',
-  'frontend':   'bg-[var(--blue-subtle)] text-[var(--blue-text)] border-[var(--blue-text)]/20',
-  'backend':    'bg-[var(--amber-subtle)] text-[var(--amber-text)] border-[var(--amber-text)]/20',
+  'full-stack': 'bg-[var(--accent-subtle)] text-[var(--accent)]',
+  'frontend':   'bg-[var(--blue-subtle)] text-[var(--blue-text)]',
+  'backend':    'bg-[var(--amber-subtle)] text-[var(--amber-text)]',
 };
 
 const TYPE_LABEL: Record<ProjectType, string> = {
   'full-stack': 'Full Stack',
   'frontend':   'Frontend',
   'backend':    'Backend',
-};
-
-const CAT_BADGE: Record<string, string> = {
-  internship: 'bg-[var(--green-subtle)] text-[var(--green-text)] border-[var(--green-text)]/20',
-  personal:   'bg-[var(--surface)] text-[var(--text-secondary)] border-[var(--border)]',
-  academic:   'bg-[var(--amber-subtle)] text-[var(--amber-text)] border-[var(--amber-text)]/20',
 };
 
 const CAT_LABEL: Record<string, string> = {
@@ -102,79 +85,85 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
   const shouldReduce = useReducedMotion();
   const liveLinks   = project.links.filter((l) => classifyLink(l) === 'live');
   const githubLinks = project.links.filter((l) => classifyLink(l) === 'github');
-  const initials    = project.title.slice(0, 2).toUpperCase();
-  const color       = avatarColor(project.slug);
 
-  const btnBase =
+  const primaryHref = project.caseStudyAvailable
+    ? `/projects/${project.slug}`
+    : liveLinks[0]?.url ?? githubLinks[0]?.url ?? '/projects';
+
+  const pillBase =
     'inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border transition-colors duration-150';
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: shouldReduce ? 0 : 14 }}
+      initial={{ opacity: 0, y: shouldReduce ? 0 : 16 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.45, delay: 0.05 + index * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="group flex gap-4 rounded-xl border border-[var(--border)] bg-[var(--surface)]
-                 px-5 py-5 hover:border-[var(--border-strong)] hover:bg-[var(--surface-raised)]
-                 transition-colors duration-200"
+      transition={{ duration: 0.45, delay: 0.04 + (index % 6) * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="card-premium group flex h-full flex-col"
     >
-      {/* Letter avatar */}
-      <span
-        className={`shrink-0 hidden sm:inline-flex items-center justify-center
-                    w-11 h-11 rounded-xl font-bold text-sm select-none ${color}`}
-        aria-hidden
-      >
-        {initials}
-      </span>
+      {/* ── Media header ─────────────────────────────────────── */}
+      <div className="relative aspect-[16/9] overflow-hidden">
+        <img
+          src={project.image}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover transition-transform duration-[600ms] ease-out group-hover:scale-[1.06]"
+        />
+        <div
+          className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent"
+          aria-hidden
+        />
 
-      {/* Main content */}
-      <div className="min-w-0 flex-1 flex flex-col gap-2.5">
+        {/* Featured star */}
+        {project.featured && (
+          <span className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-full bg-black/45 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm ring-1 ring-white/20">
+            ★ Featured
+          </span>
+        )}
 
-        {/* Title + badges */}
-        <div className="flex flex-wrap items-start gap-x-2 gap-y-1.5">
-          {project.caseStudyAvailable ? (
-            <Link
-              to={`/projects/${project.slug}`}
-              className="text-sm font-semibold text-[var(--text)] hover:text-[var(--accent)]
-                         transition-colors duration-150 leading-snug"
-            >
-              {project.title}
-            </Link>
-          ) : (
-            <h3 className="text-sm font-semibold text-[var(--text)] leading-snug">
-              {project.title}
-            </h3>
-          )}
+        {/* Type badge */}
+        {project.type && (
+          <span
+            className={`absolute right-4 top-4 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider backdrop-blur-sm ${TYPE_BADGE[project.type]}`}
+          >
+            {TYPE_LABEL[project.type]}
+          </span>
+        )}
+      </div>
 
-          <div className="flex flex-wrap gap-1.5 mt-0.5">
-            {project.featured && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[var(--accent-subtle)] text-[var(--accent)] border border-[var(--accent)]/20">
-                ★ Featured
-              </span>
-            )}
-            {project.type && (
-              <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${TYPE_BADGE[project.type]}`}>
-                {TYPE_LABEL[project.type]}
-              </span>
-            )}
-            <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${CAT_BADGE[project.category]}`}>
-              {CAT_LABEL[project.category]}
-            </span>
-          </div>
-        </div>
+      {/* ── Body ─────────────────────────────────────────────── */}
+      <div className="flex flex-1 flex-col gap-3 p-5 sm:p-6">
+        <Link
+          to={primaryHref}
+          target={primaryHref.startsWith('http') ? '_blank' : undefined}
+          rel={primaryHref.startsWith('http') ? 'noopener noreferrer' : undefined}
+          className="flex items-start justify-between gap-3 focus-ring rounded-md"
+        >
+          <h3 className="text-base font-bold leading-snug text-[var(--text)] transition-colors group-hover:text-[var(--accent)]">
+            {project.title}
+          </h3>
+          <FiArrowUpRight
+            size={18}
+            aria-hidden
+            className="mt-0.5 flex-shrink-0 text-[var(--text-muted)] transition-all duration-200
+                       group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[var(--accent)]"
+          />
+        </Link>
 
-        {/* Description */}
-        <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-          {project.description}
-        </p>
+        {/* Category */}
+        <span className="-mt-1 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+          {CAT_LABEL[project.category]}
+        </span>
+
+        <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{project.description}</p>
 
         {/* Tech tags */}
-        <div className="flex flex-wrap gap-1.5" role="list" aria-label="Technologies">
+        <div className="mt-auto flex flex-wrap gap-1.5 pt-1" role="list" aria-label="Technologies">
           {project.tags.map((tag) => (
             <span
               key={tag}
               role="listitem"
-              className="text-[11px] font-medium px-2.5 py-0.5 rounded-full
-                         bg-[var(--bg)] border border-[var(--border)] text-[var(--text-secondary)]"
+              className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--text-secondary)]"
             >
               {tag}
             </span>
@@ -183,7 +172,7 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
 
         {/* Links */}
         {(liveLinks.length > 0 || githubLinks.length > 0 || project.caseStudyAvailable) && (
-          <div className="flex flex-wrap gap-2 pt-0.5">
+          <div className="flex flex-wrap gap-2 pt-1">
             {liveLinks.map((link) => (
               <a
                 key={link.url}
@@ -191,7 +180,7 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${project.title} — live site`}
-                className={`${btnBase} border-[var(--green-text)]/30 text-[var(--green-text)] bg-[var(--green-subtle)] hover:bg-[var(--green-text)]/15`}
+                className={`${pillBase} border-[var(--green-text)]/30 bg-[var(--green-subtle)] text-[var(--green-text)] hover:bg-[var(--green-text)]/15`}
               >
                 <FiExternalLink size={11} aria-hidden />
                 Live
@@ -204,7 +193,7 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${project.title} — repository`}
-                className={`${btnBase} border-[var(--border)] text-[var(--text-secondary)] bg-[var(--surface)] hover:border-[var(--border-strong)] hover:text-[var(--text)]`}
+                className={`${pillBase} border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text)]`}
               >
                 <FiGithub size={11} aria-hidden />
                 GitHub
@@ -217,7 +206,7 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`${project.title} — ${link.name}`}
-                  className={`${btnBase} border-[var(--border)] text-[var(--text-secondary)] bg-[var(--surface)] hover:border-[var(--border-strong)] hover:text-[var(--text)]`}
+                  className={`${pillBase} border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text)]`}
                 >
                   <FiGithub size={11} aria-hidden />
                   {link.name}
@@ -229,7 +218,7 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
               <Link
                 to={`/projects/${project.slug}`}
                 aria-label={`${project.title} — case study`}
-                className={`${btnBase} border-[var(--accent)]/30 text-[var(--accent)] bg-[var(--accent-subtle)] hover:bg-[var(--accent)]/15`}
+                className={`${pillBase} border-[var(--accent)]/30 bg-[var(--accent-subtle)] text-[var(--accent)] hover:bg-[var(--accent)]/15`}
               >
                 <FiFileText size={11} aria-hidden />
                 Case Study
@@ -237,7 +226,6 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
             )}
           </div>
         )}
-
       </div>
     </motion.article>
   );
@@ -271,36 +259,35 @@ const ProjectsPage = () => {
 
       {/* ── Header ──────────────────────────────────────────────────────── */}
       <section className="section-spacing-sm" aria-labelledby="archive-heading">
-        <div className="container-page">
-          <div ref={headerRef}>
+        <div className="container-wide">
+          <div ref={headerRef} className="max-w-3xl">
             <motion.div {...fadeUp(headerInView, 0)}>
               <p className="section-eyebrow mb-2">All Work</p>
-              <h1 id="archive-heading" className="section-title">
+              <h1 id="archive-heading" className="text-display font-extrabold text-[var(--text)]">
                 Project Archive
               </h1>
-              <p className="section-desc mt-3 max-w-xl">
-                A curated collection of full-stack, frontend, backend, and
-                production-style projects — built during internships, freelance
-                engagements, and personal engineering.
+              <p className="section-desc mt-3 max-w-2xl">
+                A curated collection of full-stack, frontend, backend, and production-style
+                projects — built during internships, freelance engagements, and personal
+                engineering.
               </p>
             </motion.div>
 
             {/* Stats row */}
             <motion.div
               {...fadeUp(headerInView, 0.15)}
-              className="mt-8 flex flex-wrap gap-4"
+              className="mt-8 flex flex-wrap gap-3"
               aria-label="Project statistics"
             >
               {STATS.map((stat) => (
                 <div
                   key={stat.label}
-                  className="flex items-center gap-3 rounded-lg border border-[var(--border)]
-                             bg-[var(--surface)] px-4 py-3"
+                  className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3"
                 >
-                  <span className="text-2xl font-bold tabular-nums text-[var(--text)]">
+                  <span className="text-2xl font-bold tabular-nums text-[var(--accent)]">
                     {stat.value}
                   </span>
-                  <span className="text-xs text-[var(--text-secondary)] font-medium leading-tight max-w-[6rem]">
+                  <span className="max-w-[6rem] text-xs font-medium leading-tight text-[var(--text-secondary)]">
                     {stat.label}
                   </span>
                 </div>
@@ -310,18 +297,13 @@ const ProjectsPage = () => {
         </div>
       </section>
 
-      {/* ── Archive list ────────────────────────────────────────────────── */}
-      <section
-        ref={listRef}
-        className="section-spacing-sm pb-20"
-        aria-labelledby="archive-heading"
-      >
-        <div className="container-page">
-
+      {/* ── Archive grid ────────────────────────────────────────────────── */}
+      <section ref={listRef} className="section-spacing-sm pb-20" aria-label="Project list">
+        <div className="container-wide">
           {/* Filter bar */}
           <motion.div
             {...fadeUp(listInView, 0)}
-            className="mb-6 flex flex-wrap gap-2"
+            className="mb-5 flex flex-wrap gap-2 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-2"
             role="group"
             aria-label="Filter projects"
           >
@@ -333,35 +315,38 @@ const ProjectsPage = () => {
                   key={key}
                   onClick={() => setActiveFilter(key)}
                   aria-pressed={isActive}
-                  className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2
-                              rounded-full border transition-colors duration-150 focus-ring
+                  className={`relative inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold
+                              transition-colors duration-150 focus-ring
                               ${isActive
-                                ? 'bg-[var(--accent)] text-white border-[var(--accent)] shadow-sm'
-                                : 'bg-[var(--surface)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--border-strong)] hover:text-[var(--text)]'
+                                ? 'text-white'
+                                : 'text-[var(--text-secondary)] hover:bg-[var(--surface-raised)] hover:text-[var(--text)]'
                               }`}
                 >
+                  {isActive && (
+                    <motion.span
+                      layoutId="filter-pill"
+                      className="absolute inset-0 -z-10 rounded-xl bg-[var(--accent)] shadow-sm"
+                      transition={{ type: 'spring', stiffness: 450, damping: 35 }}
+                    />
+                  )}
                   {label}
-                  <span
-                    className={`tabular-nums ${isActive ? 'opacity-75' : 'opacity-50'}`}
-                  >
-                    {count}
-                  </span>
+                  <span className={`tabular-nums ${isActive ? 'opacity-80' : 'opacity-50'}`}>{count}</span>
                 </button>
               );
             })}
           </motion.div>
 
           {/* Results count */}
-          <p className="text-xs text-[var(--text-secondary)] mb-5 tabular-nums" aria-live="polite">
+          <p className="mb-6 text-xs tabular-nums text-[var(--text-secondary)]" aria-live="polite">
             {filtered.length} {filtered.length === 1 ? 'project' : 'projects'}
             {activeFilter !== 'all' && (
-              <> matching <span className="font-medium text-[var(--text)]">"{FILTERS.find(f => f.key === activeFilter)?.label}"</span></>
+              <> matching <span className="font-medium text-[var(--text)]">"{FILTERS.find((f) => f.key === activeFilter)?.label}"</span></>
             )}
           </p>
 
           {/* Cards */}
           {filtered.length > 0 ? (
-            <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {filtered.map((project, i) => (
                 <ProjectCard
                   key={`${activeFilter}-${project.slug}`}
@@ -374,31 +359,18 @@ const ProjectsPage = () => {
           ) : (
             /* Empty state */
             <div
-              className="flex flex-col items-center justify-center gap-4 rounded-xl
-                         border border-[var(--border)] bg-[var(--surface)]
-                         py-16 px-8 text-center"
+              className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-8 py-16 text-center"
               role="status"
               aria-label="No projects found"
             >
-              <span
-                className="inline-flex items-center justify-center w-12 h-12 rounded-xl
-                           bg-[var(--accent-subtle)] text-[var(--accent)]"
-                aria-hidden
-              >
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-subtle)] text-[var(--accent)]" aria-hidden>
                 <FiBox size={22} />
               </span>
               <div>
-                <p className="text-sm font-semibold text-[var(--text)] mb-1">
-                  No projects found
-                </p>
-                <p className="text-sm text-[var(--text-secondary)]">
-                  No projects match the selected filter.
-                </p>
+                <p className="mb-1 text-sm font-semibold text-[var(--text)]">No projects found</p>
+                <p className="text-sm text-[var(--text-secondary)]">No projects match the selected filter.</p>
               </div>
-              <button
-                onClick={() => setActiveFilter('all')}
-                className="btn btn-secondary btn-sm"
-              >
+              <button onClick={() => setActiveFilter('all')} className="btn btn-secondary btn-sm">
                 <FiLayers size={14} aria-hidden />
                 Show all projects
               </button>

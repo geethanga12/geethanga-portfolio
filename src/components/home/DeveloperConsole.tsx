@@ -200,13 +200,13 @@ const DeveloperConsole = () => {
             </div>
 
             {/* Inactive tab */}
-            <div
+            {/* <div
               className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium opacity-35 cursor-default select-none"
               style={{ color: 'var(--text-muted)' }}
               aria-hidden="true"
             >
               Developer.java
-            </div>
+            </div> */}
           </div>
 
           {/* Code body */}

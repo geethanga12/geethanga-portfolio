@@ -5,6 +5,7 @@ import {
   FiExternalLink,
   FiGithub,
   FiArrowRight,
+  FiArrowUpRight,
   FiFileText,
 } from 'react-icons/fi';
 import { PROJECTS } from '../../data/projects';
@@ -15,7 +16,7 @@ import type { Project, ProjectLink } from '../../types/project';
 /** Short impact-focused descriptions keyed by slug */
 const IMPACT: Record<string, string> = {
   smartbiz:
-    'End-to-end ERP-lite for SMEs — covers sales, inventory, suppliers, expenses, and customer management in a unified full-stack system across web and mobile.',
+    'End-to-end ERP-lite for SMEs — sales, inventory, suppliers, expenses, and customer management in a unified full-stack system across web and mobile.',
   'iclazz-education':
     'Role-gated education platform serving students, tutors, and coordinators with class lifecycle management, attendance, and calendar tooling. Live in production.',
   'royal-weddings':
@@ -40,12 +41,7 @@ const CATEGORY_LABEL: Record<string, string> = {
 };
 
 /** Ordered slugs for the featured list */
-const FEATURED_SLUGS = [
-  'smartbiz',
-  'iclazz-education',
-  'royal-weddings',
-  'pathwise',
-];
+const FEATURED_SLUGS = ['smartbiz', 'iclazz-education', 'royal-weddings', 'pathwise'];
 
 const featured: Project[] = FEATURED_SLUGS
   .map((slug) => PROJECTS.find((p) => p.slug === slug))
@@ -71,76 +67,151 @@ function classifyLink(link: ProjectLink): LinkKind {
   return 'other';
 }
 
-/* ─── Sub-components ────────────────────────────────────────────────────── */
+/* ─── Premium project card ──────────────────────────────────────────────── */
 
-function ProjectLinks({
-  project,
-}: {
-  project: Project;
-}) {
+function PremiumCard({ project, rank }: { project: Project; rank: string }) {
+  const impact = IMPACT[project.slug] ?? project.description;
+  const catStyle = CATEGORY_STYLE[project.category] ?? CATEGORY_STYLE.personal;
+  const catLabel = CATEGORY_LABEL[project.category] ?? project.category;
+
   const liveLinks = project.links.filter((l) => classifyLink(l) === 'live');
   const githubLinks = project.links.filter((l) => classifyLink(l) === 'github');
   const hasCase = project.caseStudyAvailable;
 
-  const btnBase =
+  const primaryHref = hasCase
+    ? `/projects/${project.slug}`
+    : liveLinks[0]?.url ?? githubLinks[0]?.url ?? '/projects';
+
+  const pillBase =
     'inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border transition-colors duration-150';
 
   return (
-    <div className="flex flex-wrap gap-2">
-      {liveLinks.map((link) => (
-        <a
-          key={link.url}
-          href={link.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`${project.title} — live site`}
-          className={`${btnBase} border-[var(--green-text)]/30 text-[var(--green-text)] bg-[var(--green-subtle)] hover:bg-[var(--green-text)]/15`}
-        >
-          <FiExternalLink size={11} aria-hidden />
-          Live
-        </a>
-      ))}
+    <article className="card-premium group flex h-full flex-col">
+      {/* ── Media header ─────────────────────────────────────── */}
+      <div className="relative aspect-[16/9] overflow-hidden">
+        <img
+          src={project.image}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover transition-transform duration-[600ms] ease-out group-hover:scale-[1.06]"
+        />
+        {/* readability gradient */}
+        <div
+          className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent"
+          aria-hidden
+        />
 
-      {githubLinks.length > 0 && (
-        githubLinks.length === 1 ? (
-          <a
-            href={githubLinks[0].url}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`${project.title} — repository`}
-            className={`${btnBase} border-[var(--border)] text-[var(--text-secondary)] bg-[var(--surface)] hover:border-[var(--border-strong)] hover:text-[var(--text)]`}
-          >
-            <FiGithub size={11} aria-hidden />
-            GitHub
-          </a>
-        ) : (
-          githubLinks.map((link) => (
+        {/* Rank chip */}
+        <span
+          aria-label={`Project ${rank}`}
+          className="absolute left-4 top-4 inline-flex items-center justify-center rounded-full
+                     bg-black/45 px-2.5 py-1 font-mono text-xs font-bold tabular-nums text-white
+                     backdrop-blur-sm ring-1 ring-white/20"
+        >
+          #{rank}
+        </span>
+
+        {/* Category badge */}
+        <span
+          className={`absolute right-4 top-4 inline-flex items-center rounded-full px-2.5 py-0.5
+                      text-[10px] font-semibold uppercase tracking-wider backdrop-blur-sm ${catStyle}`}
+        >
+          {catLabel}
+        </span>
+      </div>
+
+      {/* ── Body ─────────────────────────────────────────────── */}
+      <div className="flex flex-1 flex-col gap-3 p-5 sm:p-6">
+        <Link
+          to={primaryHref}
+          target={primaryHref.startsWith('http') ? '_blank' : undefined}
+          rel={primaryHref.startsWith('http') ? 'noopener noreferrer' : undefined}
+          className="flex items-start justify-between gap-3 focus-ring rounded-md"
+        >
+          <h3 className="text-base font-bold leading-snug text-[var(--text)] transition-colors group-hover:text-[var(--accent)]">
+            {project.title}
+          </h3>
+          <FiArrowUpRight
+            size={18}
+            aria-hidden
+            className="mt-0.5 flex-shrink-0 text-[var(--text-muted)] transition-all duration-200
+                       group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[var(--accent)]"
+          />
+        </Link>
+
+        <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{impact}</p>
+
+        {/* Tech tags */}
+        <div className="mt-auto flex flex-wrap gap-1.5 pt-1" role="list" aria-label="Technologies used">
+          {project.tags.slice(0, 5).map((tag) => (
+            <span
+              key={tag}
+              role="listitem"
+              className="rounded-full border border-[var(--border)] bg-[var(--surface)]
+                         px-2.5 py-0.5 text-[11px] font-medium text-[var(--text-secondary)]"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        {/* Links */}
+        <div className="flex flex-wrap gap-2 pt-1">
+          {liveLinks.map((link) => (
             <a
               key={link.url}
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`${project.title} — ${link.name}`}
-              className={`${btnBase} border-[var(--border)] text-[var(--text-secondary)] bg-[var(--surface)] hover:border-[var(--border-strong)] hover:text-[var(--text)]`}
+              aria-label={`${project.title} — live site`}
+              className={`${pillBase} border-[var(--green-text)]/30 bg-[var(--green-subtle)] text-[var(--green-text)] hover:bg-[var(--green-text)]/15`}
+            >
+              <FiExternalLink size={11} aria-hidden />
+              Live
+            </a>
+          ))}
+
+          {githubLinks.length === 1 ? (
+            <a
+              href={githubLinks[0].url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${project.title} — repository`}
+              className={`${pillBase} border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text)]`}
             >
               <FiGithub size={11} aria-hidden />
-              {link.name}
+              GitHub
             </a>
-          ))
-        )
-      )}
+          ) : (
+            githubLinks.map((link) => (
+              <a
+                key={link.url}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${project.title} — ${link.name}`}
+                className={`${pillBase} border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text)]`}
+              >
+                <FiGithub size={11} aria-hidden />
+                {link.name}
+              </a>
+            ))
+          )}
 
-      {hasCase && (
-        <Link
-          to={`/projects/${project.slug}`}
-          aria-label={`${project.title} — case study`}
-          className={`${btnBase} border-[var(--accent)]/30 text-[var(--accent)] bg-[var(--accent-subtle)] hover:bg-[var(--accent)]/15`}
-        >
-          <FiFileText size={11} aria-hidden />
-          Case Study
-        </Link>
-      )}
-    </div>
+          {hasCase && (
+            <Link
+              to={`/projects/${project.slug}`}
+              aria-label={`${project.title} — case study`}
+              className={`${pillBase} border-[var(--accent)]/30 bg-[var(--accent-subtle)] text-[var(--accent)] hover:bg-[var(--accent)]/15`}
+            >
+              <FiFileText size={11} aria-hidden />
+              Case Study
+            </Link>
+          )}
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -158,16 +229,13 @@ export default function FeaturedProjects() {
   });
 
   return (
-    <section
-      ref={ref}
-      id="projects"
-      aria-labelledby="projects-heading"
-      className="section-spacing"
-    >
+    <section ref={ref} id="projects" aria-labelledby="projects-heading" className="section-spacing">
       <div className="container-page">
-
         {/* Header */}
-        <motion.div {...fadeUp(0)} className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <motion.div
+          {...fadeUp(0)}
+          className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+        >
           <div>
             <p className="section-eyebrow mb-2">Selected Work</p>
             <h2 id="projects-heading" className="section-title">
@@ -179,103 +247,28 @@ export default function FeaturedProjects() {
             </p>
           </div>
 
-          <Link
-            to="/projects"
-            className="btn btn-secondary btn-sm shrink-0 self-start sm:self-auto"
-          >
+          <Link to="/projects" className="btn btn-secondary btn-sm shrink-0 self-start sm:self-auto">
             View All Projects
             <FiArrowRight size={14} aria-hidden />
           </Link>
         </motion.div>
 
-        {/* Project list */}
-        <ol className="space-y-4" aria-label="Featured projects">
-          {featured.map((project, i) => {
-            const rank = String(i + 1).padStart(2, '0');
-            const impact = IMPACT[project.slug] ?? project.description;
-            const catStyle =
-              CATEGORY_STYLE[project.category] ??
-              CATEGORY_STYLE.personal;
-            const catLabel = CATEGORY_LABEL[project.category] ?? project.category;
-
-            return (
-              <motion.li
-                key={project.slug}
-                {...fadeUp(0.1 + i * 0.07)}
-              >
-                <article
-                  className="group relative rounded-xl border border-[var(--border)] bg-[var(--surface)] px-5 py-5
-                             hover:border-[var(--border-strong)] hover:bg-[var(--surface-raised)]
-                             transition-colors duration-200"
-                >
-                  {/* Top row */}
-                  <div className="flex items-start gap-4">
-                    {/* Rank */}
-                    <span
-                      aria-label={`Project ${rank}`}
-                      className="shrink-0 mt-0.5 font-mono text-sm font-bold tabular-nums
-                                 text-[var(--accent)] opacity-70 w-7 select-none"
-                    >
-                      #{rank}
-                    </span>
-
-                    {/* Content */}
-                    <div className="min-w-0 flex-1">
-
-                      {/* Title row + badges */}
-                      <div className="flex flex-wrap items-center gap-2 mb-2">
-                        <h3 className="text-sm font-semibold text-[var(--text)] leading-snug">
-                          {project.title}
-                        </h3>
-                        <span
-                          className={`inline-flex items-center text-[10px] font-semibold uppercase tracking-wider
-                                       px-2 py-0.5 rounded-full ${catStyle}`}
-                        >
-                          {catLabel}
-                        </span>
-                      </div>
-
-                      {/* Description */}
-                      <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-3 max-w-3xl">
-                        {impact}
-                      </p>
-
-                      {/* Tech tags */}
-                      <div className="flex flex-wrap gap-1.5 mb-4" role="list" aria-label="Technologies used">
-                        {project.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            role="listitem"
-                            className="text-[11px] font-medium px-2.5 py-0.5 rounded-full
-                                       bg-[var(--bg)] border border-[var(--border)]
-                                       text-[var(--text-secondary)]"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Links */}
-                      <ProjectLinks project={project} />
-                    </div>
-                  </div>
-                </article>
-              </motion.li>
-            );
-          })}
-        </ol>
+        {/* Premium card grid */}
+        <div className="grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2 lg:gap-7">
+          {featured.map((project, i) => (
+            <motion.div key={project.slug} {...fadeUp(0.1 + i * 0.08)} className="h-full">
+              <PremiumCard project={project} rank={String(i + 1).padStart(2, '0')} />
+            </motion.div>
+          ))}
+        </div>
 
         {/* Bottom CTA */}
-        <motion.div {...fadeUp(0.5)} className="mt-8 flex justify-center">
-          <Link
-            to="/projects"
-            className="btn btn-ghost btn-sm text-[var(--text-secondary)] hover:text-[var(--text)]"
-          >
+        <motion.div {...fadeUp(0.5)} className="mt-10 flex justify-center">
+          <Link to="/projects" className="btn btn-ghost btn-sm text-[var(--text-secondary)] hover:text-[var(--text)]">
             See all {PROJECTS.length} projects
             <FiArrowRight size={14} aria-hidden />
           </Link>
         </motion.div>
-
       </div>
     </section>
   );

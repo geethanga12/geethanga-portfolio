@@ -26,9 +26,9 @@ import { MdVerified } from 'react-icons/md';
 /* ─── Data ──────────────────────────────────────────────────────── */
 
 const ROLES = [
-  'Associate Full Stack Developer',
-  'Java Full Stack Developer',
+  'Full Stack Developer',
   'Software Engineer',
+  'Aspiring AI Engineer',
 ] as const;
 
 const SOCIAL = [
@@ -83,30 +83,33 @@ const Hero = () => {
           variants={container}
           initial="hidden"
           animate="show"
-          className="flex flex-col items-center text-center gap-6 max-w-3xl mx-auto"
+          className="flex w-full flex-col items-center gap-5 text-center sm:gap-6"
         >
-          {/* ── Avatar with glow ───────────────────────────────── */}
+          {/* ── Avatar with gradient ring ──────────────────────── */}
           <motion.div variants={item} className="relative">
-            {/* Accent glow behind avatar */}
+            {/* Soft accent glow behind avatar */}
             <div
-              className="absolute rounded-full pointer-events-none"
+              className="pointer-events-none absolute rounded-full"
               style={{
-                inset: '-32px',
+                inset: '-26px',
                 background:
-                  'radial-gradient(circle at center, color-mix(in srgb, var(--accent) 35%, transparent) 0%, transparent 70%)',
+                  'radial-gradient(circle at center, color-mix(in srgb, var(--accent) 20%, transparent) 0%, transparent 70%)',
               }}
               aria-hidden="true"
             />
-            <div className="relative ring-2 ring-[var(--accent)] ring-offset-[3px] ring-offset-[var(--bg)] rounded-full">
-              <img
-                src="/assets/Geeth_img.JPG"
-                alt="Geethanga Dissanayake"
-                width={148}
-                height={148}
-                fetchPriority="high"
-                decoding="async"
-                className="w-[140px] h-[140px] sm:w-[148px] sm:h-[148px] rounded-full object-cover object-top block"
-              />
+            {/* Gradient ring → inner bg gap → photo */}
+            <div className="accent-bar relative rounded-full p-[3px] shadow-[0_12px_40px_-10px_rgba(99,102,241,0.45)]">
+              <div className="rounded-full bg-[var(--bg)] p-[3px]">
+                <img
+                  src="/assets/Geeth_img.JPG"
+                  alt="Geethanga Dissanayake"
+                  width={150}
+                  height={150}
+                  fetchPriority="high"
+                  decoding="async"
+                  className="block h-[132px] w-[132px] rounded-full object-cover object-top sm:h-[148px] sm:w-[148px] xl:h-[160px] xl:w-[160px]"
+                />
+              </div>
             </div>
           </motion.div>
 
@@ -121,11 +124,11 @@ const Hero = () => {
               />
             </h1>
 
-            <div className="flex flex-wrap justify-center items-center gap-x-2 gap-y-1 text-sm font-medium text-[var(--text-muted)]">
+            <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-sm font-medium text-[var(--text-secondary)] sm:text-base">
               {ROLES.map((role, i) => (
                 <Fragment key={role}>
                   {i > 0 && (
-                    <span className="opacity-25 select-none" aria-hidden="true">·</span>
+                    <span className="select-none text-[var(--text-muted)] opacity-40" aria-hidden="true">|</span>
                   )}
                   <span className="whitespace-nowrap">{role}</span>
                 </Fragment>
@@ -133,8 +136,8 @@ const Hero = () => {
             </div>
           </motion.div>
 
-          {/* ── Social icons ───────────────────────────────────── */}
-          <motion.div variants={item} className="flex items-center gap-2">
+          {/* ── Social icons — plain glyphs ────────────────────── */}
+          <motion.div variants={item} className="flex items-center gap-1">
             {SOCIAL.map((s) => (
               <a
                 key={s.label}
@@ -142,13 +145,11 @@ const Hero = () => {
                 target={s.href.startsWith('mailto') ? undefined : '_blank'}
                 rel={s.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
                 aria-label={s.label}
-                className="w-9 h-9 flex items-center justify-center rounded-xl
-                           text-[var(--text-muted)] hover:text-[var(--accent)]
-                           bg-[var(--surface)] border border-[var(--border)]
-                           hover:border-[var(--accent)]/40 hover:bg-[var(--accent-subtle)]
-                           transition-all duration-200 focus-ring"
+                className="flex h-10 w-10 items-center justify-center rounded-lg
+                           text-[var(--text-muted)] transition-all duration-200
+                           hover:-translate-y-0.5 hover:text-[var(--accent)] focus-ring"
               >
-                <s.icon size={15} />
+                <s.icon size={19} />
               </a>
             ))}
           </motion.div>
@@ -183,7 +184,7 @@ const Hero = () => {
           {/* ── Tech stack grid ─────────────────────────────── */}
           <motion.div
             variants={item}
-            className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5 pt-1"
+            className="grid w-full grid-cols-2 gap-2.5 pt-1 sm:grid-cols-3 sm:gap-3 lg:grid-cols-5"
             aria-label="Technologies I work with"
           >
             {TECH_STACK.map((tech) => (

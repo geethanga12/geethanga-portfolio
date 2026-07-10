@@ -1,4 +1,4 @@
-export type EducationType = 'degree' | 'diploma' | 'certification';
+export type EducationType = 'degree' | 'diploma' | 'certification' | 'training';
 
 export interface EducationEntry {
   degree: string;
@@ -7,6 +7,10 @@ export interface EducationEntry {
   period: string;
   current?: boolean;
   type: EducationType;
-  description: string;
+  /** Classification / result, e.g. "Second Class Upper Division" */
+  grade?: string;
+  description?: string;
+  /** Achievement bullet points (rendered as a list, e.g. for training programmes) */
+  bullets?: string[];
   highlights?: string[];
 }

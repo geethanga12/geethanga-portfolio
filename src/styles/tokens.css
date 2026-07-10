@@ -61,6 +61,9 @@
   /* Translucent navbar pill — explicit rgba so it works without CSS color-mix tricks */
   --nav-pill-bg: rgba(255, 255, 255, 0.85);
   --menu-footer-bg: rgba(244, 244, 245, 0.50);
+  /* Soft hairline for the floating nav card — translucent so it never reads
+     as a hard outline against either background. */
+  --nav-border: rgba(17, 24, 39, 0.08);
 
   /* Code editor syntax tokens */
   --token-keyword:   #6366f1;
@@ -74,6 +77,18 @@
 
   /* Page background decorative radial */
   --page-radial: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.07) 0%, transparent 65%);
+
+  /* Shared content width — nav + all page containers track this so the
+     navbar frames the content with consistent left/right gutters.
+     Matches ashimrudrapaul.com: 1280px container, jumping to 1536px on
+     large monitors (mirrors Tailwind's `container` at the 2xl breakpoint).
+     Paired with 32px side padding → 80px gutters at 1440px, like the ref. */
+  --container-max: 80rem; /* 1280px */
+}
+
+/* Large desktop (≥1536px / 2xl): widen container to 1536px like the reference */
+@media (min-width: 1536px) {
+  :root { --container-max: 96rem; } /* 1536px */
 }
 
 /* ─── Dark mode overrides ─────────────────────────────── */
@@ -114,8 +129,10 @@
   --shadow-lg: 0 6px 20px -4px rgb(0 0 0 / 0.44), 0 3px 8px -4px rgb(0 0 0 / 0.30);
   --shadow-xl: 0 12px 32px -8px rgb(0 0 0 / 0.50), 0 4px 12px -4px rgb(0 0 0 / 0.35);
 
-  --nav-pill-bg: rgba(9, 9, 11, 0.85);
+  --nav-pill-bg: rgba(17, 17, 20, 0.72);
   --menu-footer-bg: rgba(24, 24, 27, 0.50);
+  /* Faint light hairline in dark mode — subtle, not a bright outline */
+  --nav-border: rgba(255, 255, 255, 0.08);
 
   /* Code editor syntax tokens */
   --token-keyword:   #a5b4fc;

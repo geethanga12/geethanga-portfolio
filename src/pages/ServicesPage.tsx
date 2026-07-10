@@ -137,7 +137,25 @@ const PROCESS: ProcessStep[] = [
 
 /* ─── Sub-components ────────────────────────────────────────────────────── */
 
-function ServiceCard({ service, delay, inView }: { service: Service; delay: number; inView: boolean }) {
+/** Rotating icon-tile tints so the grid feels varied like the reference. */
+const TILE_TINTS = [
+  'bg-[var(--accent-subtle)] text-[var(--accent)]',
+  'bg-[var(--blue-subtle)] text-[var(--blue-text)]',
+  'bg-[var(--green-subtle)] text-[var(--green-text)]',
+  'bg-[var(--amber-subtle)] text-[var(--amber-text)]',
+];
+
+function ServiceCard({
+  service,
+  delay,
+  inView,
+  tint,
+}: {
+  service: Service;
+  delay: number;
+  inView: boolean;
+  tint: string;
+}) {
   const shouldReduce = useReducedMotion();
   const { icon: Icon } = service;
 
@@ -146,27 +164,23 @@ function ServiceCard({ service, delay, inView }: { service: Service; delay: numb
       initial={{ opacity: 0, y: shouldReduce ? 0 : 16 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="group flex flex-col gap-4 rounded-xl border border-[var(--border)]
-                 bg-[var(--surface)] px-5 py-5
-                 hover:border-[var(--border-strong)] hover:bg-[var(--surface-raised)]
-                 transition-colors duration-200"
+      className="card-premium group flex h-full flex-col gap-4 p-6"
     >
       {/* Icon */}
       <span
-        className="inline-flex items-center justify-center w-10 h-10 rounded-lg
-                   bg-[var(--accent-subtle)] text-[var(--accent)]
-                   group-hover:bg-[var(--accent)]/20 transition-colors duration-200"
+        className={`inline-flex h-12 w-12 items-center justify-center rounded-xl
+                   transition-transform duration-300 group-hover:scale-110 ${tint}`}
         aria-hidden
       >
-        <Icon size={19} />
+        <Icon size={22} />
       </span>
 
       {/* Text */}
       <div className="flex-1">
-        <h3 className="text-sm font-semibold text-[var(--text)] mb-1.5 leading-snug">
+        <h3 className="mb-1.5 text-base font-bold leading-snug text-[var(--text)] transition-colors group-hover:text-[var(--accent)]">
           {service.title}
         </h3>
-        <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+        <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
           {service.description}
         </p>
       </div>
@@ -177,9 +191,7 @@ function ServiceCard({ service, delay, inView }: { service: Service; delay: numb
           <span
             key={tag}
             role="listitem"
-            className="text-[11px] font-medium px-2.5 py-0.5 rounded-full
-                       bg-[var(--bg)] border border-[var(--border)]
-                       text-[var(--text-secondary)]"
+            className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--text-secondary)]"
           >
             {tag}
           </span>
@@ -228,11 +240,11 @@ const ServicesPage = () => {
             <p className="section-eyebrow mb-2">What I Build</p>
             <h1
               id="services-page-heading"
-              className="section-title max-w-2xl"
+              className="text-display font-extrabold text-[var(--text)]"
             >
               Services
             </h1>
-            <p className="section-desc mt-3 max-w-xl">
+            <p className="section-desc mt-3 max-w-2xl">
               Full-stack web development services for modern businesses — from greenfield
               product builds to targeted engineering fixes.
             </p>
@@ -248,13 +260,14 @@ const ServicesPage = () => {
       >
         <div className="container-page">
           <h2 id="services-grid-heading" className="sr-only">Service offerings</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {SERVICES.map((service, i) => (
               <ServiceCard
                 key={service.title}
                 service={service}
                 delay={0.05 + i * 0.06}
                 inView={servicesSection.inView}
+                tint={TILE_TINTS[i % TILE_TINTS.length]}
               />
             ))}
           </div>
@@ -278,7 +291,7 @@ const ServicesPage = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
             {PROCESS.map((step, i) => {
               const Icon = step.icon;
               return (
@@ -286,7 +299,8 @@ const ServicesPage = () => {
                   key={step.step}
                   {...fadeUp(processSection.inView, 0.1 + i * 0.07)}
                   className="relative flex gap-4 rounded-xl border border-[var(--border)]
-                             bg-[var(--surface)] px-5 py-5"
+                             bg-[var(--surface)] px-5 py-5 transition-all duration-200
+                             hover:-translate-y-1 hover:border-[var(--border-strong)] hover:bg-[var(--surface-raised)] hover:shadow-md"
                 >
                   {/* Step number */}
                   <span
@@ -328,9 +342,19 @@ const ServicesPage = () => {
         <div className="container-page">
           <motion.div
             {...fadeUp(ctaSection.inView, 0)}
-            className="rounded-2xl border border-[var(--border)] bg-[var(--surface-raised)]
-                       px-8 py-12 text-center flex flex-col items-center gap-6"
+            className="relative flex flex-col items-center gap-6 overflow-hidden rounded-2xl
+                       border border-[var(--border)] bg-[var(--surface-raised)]
+                       px-6 py-14 text-center sm:px-8"
           >
+            {/* Soft radial accent backdrop */}
+            <div
+              className="pointer-events-none absolute inset-0 -z-10 opacity-70"
+              style={{
+                background:
+                  'radial-gradient(ellipse 60% 60% at 50% 0%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 70%)',
+              }}
+              aria-hidden
+            />
             {/* Eyebrow */}
             <p className="section-eyebrow">Let's Build Together</p>
 

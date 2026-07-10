@@ -81,6 +81,47 @@
     height: auto;
   }
 
+  /* ─── Smooth theme switch ────────────────────────────────
+     The `.theme-transition` class is added to <html> only while the
+     user toggles light/dark, then removed. This cross-fades every
+     themed colour at once without permanently transitioning elements
+     (which would fight hover states and motion animations). */
+  .theme-transition,
+  .theme-transition *,
+  .theme-transition *::before,
+  .theme-transition *::after {
+    transition:
+      background-color 0.4s ease,
+      border-color 0.4s ease,
+      color 0.35s ease,
+      fill 0.35s ease,
+      stroke 0.35s ease,
+      box-shadow 0.4s ease !important;
+    transition-delay: 0s !important;
+  }
+
+  /* Respect reduced-motion: snap instantly */
+  @media (prefers-reduced-motion: reduce) {
+    .theme-transition,
+    .theme-transition *,
+    .theme-transition *::before,
+    .theme-transition *::after {
+      transition: none !important;
+    }
+  }
+
+  /* View Transitions theme crossfade (Chromium/Safari/FF where supported):
+     dissolve a full snapshot of the old theme into the new one — no
+     per-element contrast dip, so text never flashes. */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.42s;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  /* Both layers fully opaque so it's a clean cross-dissolve */
+  ::view-transition-old(root) { mix-blend-mode: normal; }
+  ::view-transition-new(root) { mix-blend-mode: normal; }
+
   /* ─── Reduced motion ─────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -111,35 +152,46 @@
 
   /* ─── Layout ───────────────────────────────────────────── */
 
-  /* Page-wide container — max 1088px, responsive padding */
+  /* Page-wide container — tracks the shared --container-max so it always
+     lines up with the navbar frame. Padding scales with the viewport. */
   .container-page {
     width: 100%;
-    max-width: 68rem; /* 1088px */
+    max-width: var(--container-max);
     margin-left: auto;
     margin-right: auto;
-    padding-left: clamp(1.25rem, 6vw, 3.5rem);
-    padding-right: clamp(1.25rem, 6vw, 3.5rem);
+    padding-left: clamp(1.25rem, 4vw, 2rem);
+    padding-right: clamp(1.25rem, 4vw, 2rem);
   }
 
-  /* Wider container for projects archive */
+  /* Alias — kept for any wider layouts; tracks the same width for alignment */
   .container-wide {
     width: 100%;
-    max-width: 80rem; /* 1280px */
+    max-width: var(--container-max);
     margin-left: auto;
     margin-right: auto;
-    padding-left: clamp(1rem, 5vw, 2.5rem);
-    padding-right: clamp(1rem, 5vw, 2.5rem);
+    padding-left: clamp(1.25rem, 4vw, 2rem);
+    padding-right: clamp(1.25rem, 4vw, 2rem);
   }
 
-  /* Standard section vertical rhythm */
+  /* Navbar frame — same width as the page containers (minus its own card
+     padding) so the floating bar sits inside consistent side gutters. */
+  .nav-frame {
+    width: 100%;
+    max-width: var(--container-max);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Standard section vertical rhythm — matches the reference's py-24 (96px)
+     at desktop, scaling down smoothly on smaller screens. */
   .section-spacing {
-    padding-top: clamp(4rem, 8vw, 6.5rem);
-    padding-bottom: clamp(4rem, 8vw, 6.5rem);
+    padding-top: clamp(3.5rem, 6vw, 6rem);
+    padding-bottom: clamp(3.5rem, 6vw, 6rem);
   }
 
   .section-spacing-sm {
-    padding-top: clamp(2.5rem, 5vw, 4rem);
-    padding-bottom: clamp(2.5rem, 5vw, 4rem);
+    padding-top: clamp(2.5rem, 4.5vw, 3.75rem);
+    padding-bottom: clamp(2.5rem, 4.5vw, 3.75rem);
   }
 
   /* ─── Surfaces ─────────────────────────────────────────── */
@@ -180,6 +232,58 @@
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
+  }
+
+  /* ─── Premium card ─────────────────────────────────────────
+     Glassy surface with a gradient sheen on hover, soft lift,
+     and an accent ring. Used by project/feature grids. */
+  .card-premium {
+    position: relative;
+    background-color: color-mix(in srgb, var(--surface-raised) 88%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease, border-color 0.3s ease;
+    overflow: hidden;
+  }
+
+  /* Gradient hairline that fades in on hover */
+  .card-premium::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg,
+      color-mix(in srgb, var(--accent) 55%, transparent),
+      transparent 40%,
+      transparent 60%,
+      color-mix(in srgb, var(--accent) 35%, transparent));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .card-premium:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+    border-color: transparent;
+  }
+
+  .card-premium:hover::after { opacity: 1; }
+
+  /* Accent gradient bar — decorative header strip */
+  .accent-bar {
+    background: linear-gradient(135deg, #6366f1 0%, #a78bfa 50%, #c084fc 100%);
+  }
+  .dark .accent-bar {
+    background: linear-gradient(135deg, #818cf8 0%, #c4b5fd 50%, #e879f9 100%);
   }
 
   /* ─── Typography utilities ─────────────────────────────── */

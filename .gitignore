@@ -32,6 +32,7 @@ backend/node_modules
 .env.development.local
 .env.test.local
 backend/.env
+.env.example
 
 # Production
 build

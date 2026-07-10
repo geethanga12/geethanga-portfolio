@@ -7,6 +7,7 @@ const DeveloperConsole = lazy(() => import('../components/home/DeveloperConsole'
 const ExperienceSection = lazy(() => import('../components/home/ExperienceSection'));
 const FeaturedProjects = lazy(() => import('../components/home/FeaturedProjects'));
 const EducationSection = lazy(() => import('../components/home/EducationSection'));
+const SkillsSection = lazy(() => import('../components/home/SkillsSection'));
 
 const SectionFallback = () => (
   <div className="flex items-center justify-center py-16">
@@ -29,6 +30,7 @@ const HomePage = () => {
         <FeaturedProjects />
         <ExperienceSection />
         <EducationSection />
+        <SkillsSection />
       </Suspense>
     </>
   );

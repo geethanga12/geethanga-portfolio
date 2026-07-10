@@ -32,7 +32,7 @@ const RootLayout = ({ darkMode, toggleDarkMode }: RootLayoutProps) => {
       </a>
       <ScrollToTop />
       <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-      <main id="main-content" className="flex-1 pt-[var(--nav-height)] overflow-x-clip" tabIndex={-1}>
+      <main id="main-content" className="flex-1 overflow-x-clip pt-[5rem] sm:pt-[5.5rem]" tabIndex={-1}>
         <Outlet />
       </main>
       <Footer />

@@ -1,4 +1,5 @@
-import { useEffect, useState, lazy, Suspense } from 'react';
+import { useEffect, useRef, useState, lazy, Suspense } from 'react';
+import { flushSync } from 'react-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import RootLayout from './layouts/RootLayout';
@@ -26,20 +27,61 @@ function App() {
     }
   });
 
-  useEffect(() => {
-    const root = document.documentElement;
-    if (darkMode) {
-      root.classList.add('dark');
-      root.style.colorScheme = 'dark';
-      localStorage.setItem('theme', 'dark');
-    } else {
-      root.classList.remove('dark');
-      root.style.colorScheme = 'light';
-      localStorage.setItem('theme', 'light');
-    }
-  }, [darkMode]);
+  const themeTimer = useRef<number>();
 
-  const toggleDarkMode = () => setDarkMode((prev) => !prev);
+  // Apply theme to <html> synchronously (also persists the choice)
+  const applyTheme = (dark: boolean) => {
+    const root = document.documentElement;
+    root.classList.toggle('dark', dark);
+    root.style.colorScheme = dark ? 'dark' : 'light';
+    try {
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    } catch {
+      /* ignore unavailable storage */
+    }
+  };
+
+  // Keep <html> in sync on mount (an inline script sets it pre-React; this is a safety net)
+  useEffect(() => {
+    applyTheme(darkMode);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const toggleDarkMode = () => {
+    const next = !darkMode;
+
+    // Commit state + DOM together so the View Transition snapshots the new theme
+    const commit = () => {
+      flushSync(() => setDarkMode(next));
+      applyTheme(next);
+    };
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const doc = document as Document & {
+      startViewTransition?: (cb: () => void) => void;
+    };
+
+    if (reduce) {
+      commit();
+      return;
+    }
+
+    // Preferred: crossfade a snapshot of the page (no text-contrast flash)
+    if (typeof doc.startViewTransition === 'function') {
+      doc.startViewTransition(commit);
+      return;
+    }
+
+    // Fallback: brief colour cross-fade via the .theme-transition class
+    const root = document.documentElement;
+    root.classList.add('theme-transition');
+    window.clearTimeout(themeTimer.current);
+    themeTimer.current = window.setTimeout(
+      () => root.classList.remove('theme-transition'),
+      450,
+    );
+    commit();
+  };
 
   return (
     <HelmetProvider>
