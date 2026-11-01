@@ -37,10 +37,16 @@ const Navbar = () => {
 
   // ── Auto-focus first menu item when opened ────────────────
   useEffect(() => {
-    if (menuOpen && menuRef.current) {
-      const first = menuRef.current.querySelector<HTMLElement>('a[href], button');
-      first?.focus();
-    }
+    if (!menuOpen || !menuRef.current) return;
+    const first = menuRef.current.querySelector<HTMLElement>('a[href], button');
+    if (!first) return;
+
+    // The visibility transition starts out hidden, and hidden elements can't take focus
+    let frame = requestAnimationFrame(function focusWhenVisible() {
+      if (getComputedStyle(first).visibility === 'visible') first.focus();
+      else frame = requestAnimationFrame(focusWhenVisible);
+    });
+    return () => cancelAnimationFrame(frame);
   }, [menuOpen]);
 
   // ── Close and return focus to trigger ────────────────────
@@ -232,22 +238,28 @@ const Navbar = () => {
                   aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
                   aria-expanded={menuOpen}
                   aria-controls="mobile-menu"
-                  className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg
+                  className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg
                              border border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]
                              transition-all hover:text-[var(--text)] focus-ring"
                 >
-                  <AnimatePresence mode="wait" initial={false}>
-                    <motion.span
-                      key={menuOpen ? 'close' : 'open'}
-                      initial={{ rotate: 45, opacity: 0, scale: 0.7 }}
-                      animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                      exit={{ rotate: -45, opacity: 0, scale: 0.7 }}
-                      transition={{ duration: 0.14 }}
-                      className="flex items-center justify-center"
-                    >
-                      {menuOpen ? <FaTimes size={15} /> : <FaBars size={15} />}
-                    </motion.span>
-                  </AnimatePresence>
+                  <span
+                    className={[
+                      'absolute inset-0 flex items-center justify-center',
+                      'transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none',
+                      menuOpen ? 'rotate-45 opacity-0' : 'rotate-0 opacity-100',
+                    ].join(' ')}
+                  >
+                    <FaBars size={15} />
+                  </span>
+                  <span
+                    className={[
+                      'absolute inset-0 flex items-center justify-center',
+                      'transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none',
+                      menuOpen ? 'rotate-0 opacity-100' : '-rotate-45 opacity-0',
+                    ].join(' ')}
+                  >
+                    <FaTimes size={15} />
+                  </span>
                 </button>
               </div>
             </div>
@@ -258,100 +270,94 @@ const Navbar = () => {
       {/* ═══════════════════════════════════════════════════════
           Mobile menu — dropdown panel just below floating header
       ═══════════════════════════════════════════════════════ */}
-      <AnimatePresence>
-        {menuOpen && (
-          <>
-            {/* Scrim */}
-            <motion.div
-              key="scrim"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.18 }}
-              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] lg:hidden"
-              aria-hidden="true"
-              onClick={closeMenu}
-            />
+      {/* Scrim */}
+      <div
+        className={[
+          'fixed inset-0 z-40 bg-black/40 lg:hidden',
+          'transition-[opacity,visibility] duration-[180ms] ease-out motion-reduce:transition-none',
+          menuOpen ? 'visible opacity-100' : 'pointer-events-none invisible opacity-0',
+        ].join(' ')}
+        aria-hidden="true"
+        onClick={closeMenu}
+      />
 
-            {/* Panel */}
-            <motion.div
-              key="panel"
-              ref={menuRef}
-              id="mobile-menu"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Navigation menu"
-              onKeyDown={handleMenuKeyDown}
-              initial={{ opacity: 0, y: -10, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.97 }}
-              transition={{ type: 'spring', stiffness: 420, damping: 34, mass: 0.75 }}
-              style={{ transformOrigin: 'top center' }}
-              className="fixed left-4 right-4 top-[5.25rem] z-50 overflow-hidden rounded-2xl
-                         border border-[var(--border)] bg-[var(--bg)] shadow-[var(--shadow-xl)] lg:hidden"
+      {/* Panel */}
+      <div
+        ref={menuRef}
+        id="mobile-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
+        onKeyDown={handleMenuKeyDown}
+        style={{ transformOrigin: 'top center' }}
+        className={[
+          'fixed left-4 right-4 top-[5.25rem] z-50 overflow-hidden rounded-2xl',
+          'border border-[var(--border)] bg-[var(--bg)] shadow-[var(--shadow-xl)] lg:hidden',
+          'transition-[opacity,transform,visibility] duration-200 ease-out will-change-[opacity,transform] motion-reduce:transition-none',
+          menuOpen
+            ? 'visible translate-y-0 scale-100 opacity-100'
+            : 'pointer-events-none invisible -translate-y-2.5 scale-[0.97] opacity-0',
+        ].join(' ')}
+      >
+        {/* Nav links */}
+        <nav className="flex flex-col gap-0.5 p-2" aria-label="Mobile navigation">
+          {NAV_LINKS.map((link) => {
+            const isActive = link.path === '/' ? pathname === '/' : pathname.startsWith(link.path);
+            return (
+              <Link
+                key={link.path}
+                href={link.path}
+                className={[
+                  'flex items-center rounded-xl px-4 py-3 text-[15px] font-medium',
+                  'transition-all duration-150 focus-ring',
+                  isActive
+                    ? 'bg-[var(--accent-subtle)] text-[var(--accent)]'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text)]',
+                ].join(' ')}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Footer row */}
+        <div className="flex items-center justify-between gap-3 border-t border-[var(--border)] bg-[var(--menu-footer-bg)] px-4 py-3">
+          <div className="flex items-center gap-2">
+            <a
+              href="https://github.com/geethanga12"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub profile"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--border)]
+                         bg-[var(--surface)] text-[var(--text-secondary)] transition-all
+                         hover:bg-[var(--surface-raised)] hover:text-[var(--text)] focus-ring"
             >
-              {/* Nav links */}
-              <nav className="flex flex-col gap-0.5 p-2" aria-label="Mobile navigation">
-                {NAV_LINKS.map((link) => {
-                  const isActive = link.path === '/' ? pathname === '/' : pathname.startsWith(link.path);
-                  return (
-                    <Link
-                      key={link.path}
-                      href={link.path}
-                      className={[
-                        'flex items-center rounded-xl px-4 py-3 text-[15px] font-medium',
-                        'transition-all duration-150 focus-ring',
-                        isActive
-                          ? 'bg-[var(--accent-subtle)] text-[var(--accent)]'
-                          : 'text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text)]',
-                      ].join(' ')}
-                    >
-                      {link.label}
-                    </Link>
-                  );
-                })}
-              </nav>
+              <FaGithub size={15} />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/geethanga-dissanayake/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn profile"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--border)]
+                         bg-[var(--surface)] text-[var(--text-secondary)] transition-all
+                         hover:bg-[var(--surface-raised)] hover:text-[var(--text)] focus-ring"
+            >
+              <FaLinkedin size={15} />
+            </a>
+          </div>
 
-              {/* Footer row */}
-              <div className="flex items-center justify-between gap-3 border-t border-[var(--border)] bg-[var(--menu-footer-bg)] px-4 py-3">
-                <div className="flex items-center gap-2">
-                  <a
-                    href="https://github.com/geethanga12"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="GitHub profile"
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--border)]
-                               bg-[var(--surface)] text-[var(--text-secondary)] transition-all
-                               hover:bg-[var(--surface-raised)] hover:text-[var(--text)] focus-ring"
-                  >
-                    <FaGithub size={15} />
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/geethanga-dissanayake/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="LinkedIn profile"
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--border)]
-                               bg-[var(--surface)] text-[var(--text-secondary)] transition-all
-                               hover:bg-[var(--surface-raised)] hover:text-[var(--text)] focus-ring"
-                  >
-                    <FaLinkedin size={15} />
-                  </a>
-                </div>
-
-                <Link
-                  href="/contact"
-                  className="flex max-w-[160px] flex-1 items-center justify-center rounded-xl bg-[var(--accent)]
-                             px-4 py-2.5 text-sm font-semibold text-white shadow-[0_1px_4px_rgba(99,102,241,0.4)]
-                             transition-colors hover:bg-[var(--accent-hover)] focus-ring"
-                >
-                  Get in touch
-                </Link>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+          <Link
+            href="/contact"
+            className="flex max-w-[160px] flex-1 items-center justify-center rounded-xl bg-[var(--accent)]
+                       px-4 py-2.5 text-sm font-semibold text-white shadow-[0_1px_4px_rgba(99,102,241,0.4)]
+                       transition-colors hover:bg-[var(--accent-hover)] focus-ring"
+          >
+            Get in touch
+          </Link>
+        </div>
+      </div>
     </>
   );
 };
