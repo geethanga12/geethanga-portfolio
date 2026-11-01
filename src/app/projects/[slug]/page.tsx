@@ -1,33 +1,21 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import {
-  FiArrowLeft,
-  FiArrowRight,
-  FiCalendar,
-  FiUser,
-  FiExternalLink,
-  FiGithub,
-  FiAlertCircle,
-  FiTarget,
-  FiCheckCircle,
-  FiTrendingUp,
-  FiClock,
-} from 'react-icons/fi';
 import { CASE_STUDIES, PROJECTS } from '../../../data/projects';
-import type { ProjectLink } from '../../../types/project';
-import { SITE_URL } from '../../../data/site';
+import { SITE_NAME, SITE_URL } from '../../../data/site';
+import ArchitectureDiagram from '../../../components/case-study/ArchitectureDiagram';
+import CaseStudyFooter from '../../../components/case-study/CaseStudyFooter';
+import CaseStudyHeader from '../../../components/case-study/CaseStudyHeader';
+import CaseStudySidebar from '../../../components/case-study/CaseStudySidebar';
+import EngineeringHighlights from '../../../components/case-study/EngineeringHighlights';
+import FeatureGrid from '../../../components/case-study/FeatureGrid';
+import KeyMetrics from '../../../components/case-study/KeyMetrics';
+import ProjectFacts from '../../../components/case-study/ProjectFacts';
+import ScreenshotGallery from '../../../components/case-study/ScreenshotGallery';
+import Section from '../../../components/case-study/Section';
+import TechStack from '../../../components/case-study/TechStack';
 
-const METRIC_ICONS = [FiTarget, FiTrendingUp, FiCheckCircle] as const;
-
-function classifyLink(link: ProjectLink): 'live' | 'github' | 'other' {
-  const l = link.name.toLowerCase();
-  if (l.includes('live') || l.includes('site') || l.includes('demo')) return 'live';
-  if (
-    l.includes('github') || l.includes('repo') || l.includes('backend') ||
-    l.includes('frontend') || l.includes('mobile') || l.includes('source')
-  ) return 'github';
-  return 'other';
+export function generateStaticParams() {
+  return CASE_STUDIES.map((study) => ({ slug: study.slug }));
 }
 
 export async function generateMetadata({
@@ -41,15 +29,19 @@ export async function generateMetadata({
       title: 'Case Study Not Found',
     };
   }
-  const metaDesc =
-    study.problem.length > 155 ? study.problem.slice(0, 152) + '…' : study.problem;
+
+  const project = PROJECTS.find((p) => p.slug === params.slug);
+  const title = `${study.title} - Case Study | ${SITE_NAME}`;
+  const url = `${SITE_URL}/projects/${study.slug}`;
+  const images = project?.image ? [project.image] : undefined;
 
   return {
-    title: `${study.title} — Case Study`,
-    description: metaDesc,
-    alternates: {
-      canonical: `${SITE_URL}/projects/${study.slug}`,
-    },
+    // absolute: the root layout's title template would add the name a second time
+    title: { absolute: title },
+    description: study.subtitle,
+    alternates: { canonical: url },
+    openGraph: { type: 'article', siteName: SITE_NAME, title, description: study.subtitle, url, images },
+    twitter: { card: 'summary_large_image', title, description: study.subtitle, images },
   };
 }
 
@@ -58,179 +50,134 @@ export default function ProjectDetailsPage({
 }: {
   params: { slug: string };
 }) {
-  const study = CASE_STUDIES.find((item) => item.slug === params.slug);
-  const project = PROJECTS.find((p) => p.slug === params.slug);
-
-  if (!study) {
+  const index = CASE_STUDIES.findIndex((item) => item.slug === params.slug);
+  if (index === -1) {
     notFound();
   }
 
-  const liveLinks = project?.links.filter((l) => classifyLink(l) === 'live') ?? [];
-  const githubLinks = project?.links.filter((l) => classifyLink(l) === 'github') ?? [];
+  const study = CASE_STUDIES[index];
+  const project = PROJECTS.find((p) => p.slug === params.slug);
 
-  const pill =
-    'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors duration-150';
+  const hasScreenshots = Boolean(study.screenshots?.length);
+  const hasFeatures = Boolean(study.features?.length);
+  const hasContributions = Boolean(study.contributions?.length);
+  const hasHighlights = Boolean(study.highlights?.length);
+
+  const sections = [
+    { id: 'screenshots', title: 'Screenshots', shown: hasScreenshots },
+    { id: 'overview', title: 'Overview', shown: true },
+    { id: 'features', title: 'Key features', shown: hasFeatures },
+    { id: 'contributions', title: 'My role and contributions', shown: hasContributions },
+    { id: 'highlights', title: 'Engineering highlights', shown: hasHighlights },
+    { id: 'architecture', title: 'Architecture', shown: Boolean(study.architecture) },
+    { id: 'stack', title: 'Tech stack', shown: true },
+  ].filter((section) => section.shown);
+  const titleOf = (id: string) => sections.find((section) => section.id === id)?.title ?? '';
 
   return (
     <article className="section-spacing-sm pb-20">
-      <div className="container-page max-w-4xl">
-        <div>
-          <Link
-            href="/projects"
-            className="group mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent)] focus-ring rounded-md"
-          >
-            <FiArrowLeft size={15} aria-hidden className="transition-transform group-hover:-translate-x-0.5" />
-            Back to Projects
-          </Link>
-        </div>
+      <div className="container-page max-w-6xl">
+        <CaseStudyHeader study={study} project={project} />
 
-        <header className="mb-8">
-          <p className="section-eyebrow mb-2">Case Study</p>
-          <h1 className="text-display font-extrabold leading-tight text-[var(--text)]">
-            {study.title}
-          </h1>
-          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-[var(--text-secondary)]">
-            <span className="inline-flex items-center gap-1.5">
-              <FiUser size={14} aria-hidden className="text-[var(--accent)]" />
-              {study.role}
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <FiCalendar size={14} aria-hidden className="text-[var(--accent)]" />
-              {study.timeline}
-            </span>
-            {project?.status === 'in-development' && (
-              <span className={`${pill} border-[var(--amber-text)]/30 bg-[var(--amber-subtle)] text-[var(--amber-text)]`}>
-                <FiClock size={12} aria-hidden />
-                In development
-              </span>
-            )}
-          </div>
-        </header>
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-12">
+          <div className="min-w-0 space-y-12">
+            <ProjectFacts
+              study={study}
+              project={project}
+              className="grid grid-cols-2 gap-x-5 gap-y-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:grid-cols-3 lg:hidden"
+            />
 
-        {project?.image && (
-          <div className="mb-10 overflow-hidden rounded-2xl border border-[var(--border)] shadow-[var(--shadow-lg)]">
-            <div className="relative aspect-[16/7]">
+            {study.metrics && study.metrics.length > 0 && <KeyMetrics metrics={study.metrics} />}
+
+            {project?.image && (
               <img
                 src={project.image}
-                alt={`${study.title} preview`}
-                loading="lazy"
+                alt=""
+                width={1200}
+                height={514}
                 decoding="async"
-                className="h-full w-full object-cover"
+                className="aspect-[21/9] max-h-64 w-full rounded-2xl border border-[var(--border)] object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" aria-hidden />
-            </div>
-          </div>
-        )}
+            )}
 
-        <section className="mb-10">
-          <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)]">
-            Tech Stack
-          </h2>
-          <div className="flex flex-wrap gap-2">
-            {study.stack.map((item) => (
-              <span
-                key={item}
-                className="rounded-full border border-[var(--accent)]/20 bg-[var(--accent-subtle)] px-3 py-1 text-sm font-medium text-[var(--accent)]"
-              >
-                {item}
-              </span>
-            ))}
-          </div>
-        </section>
+            {hasScreenshots && (
+              <Section id="screenshots" title={titleOf('screenshots')}>
+                <ScreenshotGallery screenshots={study.screenshots!} />
+              </Section>
+            )}
 
-        <section className="mb-10">
-          <div className="mb-3 flex items-center gap-2.5">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--amber-subtle)] text-[var(--amber-text)]" aria-hidden>
-              <FiTarget size={17} />
-            </span>
-            <h2 className="text-lg font-bold text-[var(--text)]">The Problem</h2>
-          </div>
-          <p className="leading-relaxed text-[var(--text-secondary)]">{study.problem}</p>
-        </section>
-
-        <section className="mb-10">
-          <div className="mb-4 flex items-center gap-2.5">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)]" aria-hidden>
-              <FiCheckCircle size={17} />
-            </span>
-            <h2 className="text-lg font-bold text-[var(--text)]">The Solution</h2>
-          </div>
-          <ul className="space-y-3">
-            {study.solution.map((point) => (
-              <li key={point} className="flex gap-3 leading-relaxed text-[var(--text-secondary)]">
-                <FiArrowRight size={16} aria-hidden className="mt-1 flex-shrink-0 text-[var(--accent)]" />
-                <span>{point}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="mb-10">
-          <div className="mb-4 flex items-center gap-2.5">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--green-subtle)] text-[var(--green-text)]" aria-hidden>
-              <FiTrendingUp size={17} />
-            </span>
-            <h2 className="text-lg font-bold text-[var(--text)]">Impact</h2>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-3">
-            {study.impactMetrics.map((metric, i) => {
-              const Icon = METRIC_ICONS[i % METRIC_ICONS.length];
-              return (
-                <div key={metric.label} className="card-surface flex flex-col gap-2 p-5">
-                  <Icon size={18} className="text-[var(--accent)]" aria-hidden />
-                  <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-                    {metric.label}
-                  </p>
-                  <p className="text-base font-bold leading-snug text-[var(--text)]">{metric.value}</p>
-                  {metric.note && (
-                    <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{metric.note}</p>
+            <Section id="overview" title={titleOf('overview')}>
+              <div className="max-w-[60ch] space-y-3 text-base leading-7 text-[var(--text-secondary)]">
+                {study.overview.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+              {study.users && study.users.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="mb-3 text-base font-semibold text-[var(--text)]">Who uses it</h3>
+                  {study.users.some((user) => user.description) ? (
+                    <dl className="max-w-[60ch] space-y-2.5">
+                      {study.users.map((user) => (
+                        <div key={user.role} className="grid gap-x-4 sm:grid-cols-[9.5rem_minmax(0,1fr)]">
+                          <dt className="text-[15px] font-semibold leading-relaxed text-[var(--text)]">{user.role}</dt>
+                          <dd className="text-[15px] leading-relaxed text-[var(--text-secondary)]">{user.description}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  ) : (
+                    <p className="text-[15px] leading-relaxed text-[var(--text-secondary)]">
+                      {study.users.map((user) => user.role).join(', ')}
+                    </p>
                   )}
                 </div>
-              );
-            })}
+              )}
+            </Section>
+
+            {hasFeatures && (
+              <Section id="features" title={titleOf('features')}>
+                <FeatureGrid groups={study.features!} />
+              </Section>
+            )}
+
+            {hasContributions && (
+              <Section id="contributions" title={titleOf('contributions')}>
+                <ul className="max-w-[60ch] list-disc space-y-2 pl-5 text-base leading-7 text-[var(--text-secondary)] marker:text-[var(--accent-text)]">
+                  {study.contributions!.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </Section>
+            )}
+
+            {hasHighlights && (
+              <Section id="highlights" title={titleOf('highlights')}>
+                <EngineeringHighlights highlights={study.highlights!} />
+              </Section>
+            )}
+
+            {study.architecture && (
+              <Section id="architecture" title={titleOf('architecture')}>
+                <ArchitectureDiagram architecture={study.architecture} />
+              </Section>
+            )}
+
+            <Section id="stack" title={titleOf('stack')}>
+              <TechStack groups={study.stack} />
+            </Section>
+
+            {study.disclosure && (
+              <p className="max-w-[60ch] text-[13px] leading-relaxed text-[var(--text-secondary)]">{study.disclosure}</p>
+            )}
           </div>
-        </section>
 
-        <section className="mb-10 flex gap-3 rounded-xl border border-[var(--amber-text)]/25 bg-[var(--amber-subtle)] p-4 text-sm text-[var(--amber-text)]">
-          <FiAlertCircle size={16} aria-hidden className="mt-0.5 flex-shrink-0" />
-          <p className="leading-relaxed">
-            <strong className="font-semibold">Disclosure: </strong>
-            {study.sanitizedNotes}
-          </p>
-        </section>
+          <CaseStudySidebar
+            study={study}
+            project={project}
+            sections={sections.map(({ id, title }) => ({ id, title }))}
+          />
+        </div>
 
-        <footer className="flex flex-wrap items-center gap-3 border-t border-[var(--border)] pt-8">
-          <Link href="/projects" className="btn btn-secondary btn-sm">
-            <FiArrowLeft size={14} aria-hidden />
-            All Projects
-          </Link>
-
-          {liveLinks.map((link) => (
-            <a
-              key={link.url}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${pill} border-[var(--green-text)]/30 bg-[var(--green-subtle)] text-[var(--green-text)] hover:bg-[var(--green-text)]/15`}
-            >
-              <FiExternalLink size={12} aria-hidden />
-              Live Site
-            </a>
-          ))}
-
-          {githubLinks.map((link) => (
-            <a
-              key={link.url}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${pill} border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text)]`}
-            >
-              <FiGithub size={12} aria-hidden />
-              {link.name}
-            </a>
-          ))}
-        </footer>
+        <CaseStudyFooter previous={CASE_STUDIES[index - 1]} next={CASE_STUDIES[index + 1]} />
       </div>
     </article>
   );
