@@ -43,21 +43,21 @@ const SERVICES: Service[] = [
     title: 'LMS & Course Platform Development',
     description:
       'Role-based learning management systems with class scheduling, attendance, progress tracking, and student-tutor workflows.',
-    tags: ['React', 'Spring Boot', 'MySQL', 'FullCalendar'],
+    tags: ['React', 'Spring Boot', 'MySQL', 'JWT'],
   },
   {
     icon: FiShoppingCart,
-    title: 'E-commerce, POS & Inventory Systems',
+    title: 'POS & Inventory Systems',
     description:
-      'Scalable commerce platforms with sales flows, inventory management, supplier modules, and real-time reporting.',
-    tags: ['React', 'Spring Boot', 'MySQL', 'REST API'],
+      'Multi-branch POS and inventory systems with sales flows, batch tracking, stock transfers, and audit logging.',
+    tags: ['Next.js', 'Spring Boot', 'PostgreSQL', 'REST API'],
   },
   {
     icon: FiLayout,
     title: 'Admin Dashboard Development',
     description:
-      'Data-rich internal dashboards with analytics, role-based access control, and clean operational UX.',
-    tags: ['React', 'TypeScript', 'Tailwind CSS', 'Charts'],
+      'Data-rich internal dashboards with role-based access control and clean operational UX.',
+    tags: ['React', 'TypeScript', 'Tailwind CSS', 'RBAC'],
   },
   {
     icon: FiServer,
@@ -70,22 +70,22 @@ const SERVICES: Service[] = [
     icon: FiMonitor,
     title: 'UI/UX Frontend Implementation',
     description:
-      'Pixel-precise, accessible, and responsive frontend builds from Figma or design references — fast and maintainable.',
-    tags: ['React', 'Next.js', 'Tailwind CSS', 'Framer Motion'],
+      'Pixel-precise, accessible, and responsive frontend builds from design references — fast and maintainable.',
+    tags: ['React', 'Next.js', 'Tailwind CSS', 'Vite'],
   },
   {
     icon: FiCloud,
-    title: 'Deployment & Cloud Setup',
+    title: 'Deployment & VPS Setup',
     description:
-      'Production-ready CI/CD pipelines, Docker containerisation, and cloud hosting on AWS or Cloudflare infrastructure.',
-    tags: ['AWS', 'Docker', 'Cloudflare', 'Nginx'],
+      'Production-ready CI/CD pipelines and Linux VPS hosting with Nginx and Cloudflare.',
+    tags: ['Linux VPS', 'Nginx', 'CI/CD', 'Cloudflare'],
   },
   {
     icon: FiZap,
     title: 'Performance & Responsive Fixes',
     description:
-      'Audit and resolve bottlenecks in existing sites — Core Web Vitals, mobile responsiveness, and bundle optimisation.',
-    tags: ['Vite', 'Lighthouse', 'CSS', 'Web Performance'],
+      'Find and resolve bottlenecks in existing sites — N+1 database queries, slow endpoints, and mobile responsiveness.',
+    tags: ['Spring Boot', 'SQL', 'CSS3', 'Tailwind CSS'],
   },
 ];
 
@@ -131,7 +131,7 @@ const PROCESS: ProcessStep[] = [
     icon: FiSend,
     step: '06',
     title: 'Deploy',
-    description: 'Ship to production with proper CI/CD, monitoring, and a handoff you can actually maintain.',
+    description: 'Ship to production with proper CI/CD and a handoff you can actually maintain.',
   },
 ];
 

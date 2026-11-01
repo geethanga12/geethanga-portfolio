@@ -2,36 +2,40 @@ import { ExperienceEntry } from '../types/experience';
 
 export const EXPERIENCE: ExperienceEntry[] = [
   {
-    title: 'Associate Full Stack Developer',
+    title: 'Associate Software Engineer',
     organization: 'Ultimate Digital Solutions (Pvt) Ltd',
     period: 'April 2026 — Present',
-    location: 'Sri Lanka',
+    location: 'Panadura, Sri Lanka',
     type: 'Full-Time',
     current: true,
     summary:
-      'Progressed from intern to full-time developer, continuing to ship features across production platforms in the education and events space.',
+      'Progressed from intern to full-time engineer, working across education platforms, a wedding marketplace, and a retail POS platform in development.',
     highlights: [
+      'UDS POS: Lead developer of a multi-tenant SaaS point of sale and inventory platform, currently in development.',
+      'UDS LMS: Built and deployed end to end a learning management platform with PayHere payments and QR-verifiable certificates.',
       'Took ownership of feature delivery across multiple live client products.',
       'Led UI/UX improvements and API integrations for role-based dashboards.',
       'Contributed to architecture decisions and code reviews within the team.',
     ],
-    tags: ['React', 'Spring Boot', 'Next.js', 'MySQL', 'AWS', 'TypeScript'],
+    tags: ['React', 'Spring Boot', 'Next.js', 'MySQL', 'PostgreSQL', 'TypeScript'],
   },
   {
     title: 'Software Engineer Intern',
     organization: 'Ultimate Digital Solutions (Pvt) Ltd',
     period: 'September 2025 — March 2026',
-    location: 'Sri Lanka',
+    location: 'Panadura, Sri Lanka',
     type: 'Internship',
     current: false,
     summary:
-      'Contributed to multiple production and client projects spanning education, event, and career guidance domains with full-stack delivery responsibilities.',
+      'Worked on production platforms for tuition class management and a multi-vendor wedding marketplace, plus career guidance work on Pathwise, with full-stack delivery responsibilities.',
     highlights: [
-      'Delivered feature work across iClazz, RoyalWeddings.lk, and Pathwise.',
+      'iClazz Education: Designed, built and deployed a production tuition platform from scratch, now serving 700+ tutors and 1,000+ students across four role-based dashboards.',
+      'Royal Weddings: Built a multi-vendor marketplace as lead developer, onboarding 50+ real vendors across four access levels.',
+      'Delivered feature work on Pathwise.',
       'Implemented role-based panel workflows, API integrations, and responsive UI patterns.',
-      'Collaborated on deployment and production hardening on cloud-hosted environments.',
+      'Collaborated on deployment and production hardening on VPS-hosted environments.',
     ],
-    tags: ['React', 'Spring Boot', 'Next.js', 'MySQL', 'AWS'],
+    tags: ['React', 'Spring Boot', 'Next.js', 'MySQL', 'TypeScript'],
   },
   {
     title: 'Freelance & Personal Project Developer',
@@ -41,13 +45,13 @@ export const EXPERIENCE: ExperienceEntry[] = [
     type: 'Freelance',
     current: true,
     summary:
-      'Built and shipped a range of personal and client-style projects covering business tools, e-commerce, and productivity applications.',
+      'Built personal projects including a business management suite, a dictionary web app, and a Sri Lankan NIC utility.',
     highlights: [
       'Designed and built full-stack web apps from scratch — frontend, backend, and deployment.',
-      'Created SmartBiz, NomadStay, LifePulse, and other portfolio-grade products.',
+      'Created SmartBiz and other portfolio-grade products.',
       'Handled project architecture, responsive UI, database design, and cloud deployment.',
     ],
-    tags: ['React', 'Node.js', 'TypeScript', 'Tailwind CSS', 'MySQL', 'Docker'],
+    tags: ['React', 'Node.js', 'TypeScript', 'Tailwind CSS', 'MySQL'],
   },
 ];
 

@@ -10,13 +10,14 @@ import {
   FiArrowUpRight,
   FiLayers,
   FiBox,
+  FiClock,
 } from 'react-icons/fi';
 import { PROJECTS } from '../../data/projects';
 import type { Project, ProjectLink, ProjectType } from '../../types/project';
 
 /* ─── Filter config ─────────────────────────────────────────────────────── */
 
-type FilterKey = 'all' | 'featured' | 'full-stack' | 'frontend' | 'backend' | 'internship';
+type FilterKey = 'all' | 'featured' | 'full-stack' | 'frontend' | 'backend' | 'professional' | 'internship';
 
 const FILTERS: { key: FilterKey; label: string }[] = [
   { key: 'all',        label: 'All' },
@@ -24,6 +25,7 @@ const FILTERS: { key: FilterKey; label: string }[] = [
   { key: 'full-stack', label: 'Full Stack' },
   { key: 'frontend',   label: 'Frontend' },
   { key: 'backend',    label: 'Backend' },
+  { key: 'professional', label: 'Professional' },
   { key: 'internship', label: 'Internship' },
 ];
 
@@ -33,6 +35,7 @@ function applyFilter(projects: Project[], filter: FilterKey): Project[] {
     case 'full-stack': return projects.filter((p) => p.type === 'full-stack');
     case 'frontend':   return projects.filter((p) => p.type === 'frontend');
     case 'backend':    return projects.filter((p) => p.type === 'backend');
+    case 'professional': return projects.filter((p) => p.category === 'professional');
     case 'internship': return projects.filter((p) => p.category === 'internship');
     default:           return projects;
   }
@@ -49,9 +52,9 @@ const STATS = [
 /* ─── Visual helpers ────────────────────────────────────────────────────── */
 
 const TYPE_BADGE: Record<ProjectType, string> = {
-  'full-stack': 'bg-[var(--accent-subtle)] text-[var(--accent)]',
-  'frontend':   'bg-[var(--blue-subtle)] text-[var(--blue-text)]',
-  'backend':    'bg-[var(--amber-subtle)] text-[var(--amber-text)]',
+  'full-stack': 'bg-[var(--bg)] text-[var(--accent-text)]',
+  'frontend':   'bg-[var(--bg)] text-[var(--blue-text)]',
+  'backend':    'bg-[var(--bg)] text-[var(--amber-text)]',
 };
 
 const TYPE_LABEL: Record<ProjectType, string> = {
@@ -61,6 +64,7 @@ const TYPE_LABEL: Record<ProjectType, string> = {
 };
 
 const CAT_LABEL: Record<string, string> = {
+  professional: 'Professional',
   internship: 'Internship',
   personal:   'Personal',
   academic:   'Academic',
@@ -114,14 +118,14 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
         />
 
         {project.featured && (
-          <span className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-full bg-black/45 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm ring-1 ring-white/20">
+          <span className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-full bg-black/75 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm ring-1 ring-white/20">
             ★ Featured
           </span>
         )}
 
         {project.type && (
           <span
-            className={`absolute right-4 top-4 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider backdrop-blur-sm ${TYPE_BADGE[project.type]}`}
+            className={`absolute right-4 top-4 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${TYPE_BADGE[project.type]}`}
           >
             {TYPE_LABEL[project.type]}
           </span>
@@ -166,6 +170,13 @@ function ProjectCard({ project, index, inView }: { project: Project; index: numb
 
         {(liveLinks.length > 0 || githubLinks.length > 0 || project.caseStudyAvailable) && (
           <div className="flex flex-wrap gap-2 pt-1">
+            {project.status === 'in-development' && (
+              <span className={`${pillBase} border-[var(--amber-text)]/30 bg-[var(--amber-subtle)] text-[var(--amber-text)]`}>
+                <FiClock size={11} aria-hidden />
+                In development
+              </span>
+            )}
+
             {liveLinks.map((link) => (
               <a
                 key={link.url}
@@ -254,8 +265,8 @@ export default function ProjectsPage() {
               </h1>
               <p className="section-desc mt-3 max-w-2xl">
                 A curated collection of full-stack, frontend, backend, and production-style
-                projects — built during internships, freelance engagements, and personal
-                engineering.
+                projects — built through professional work, internships, freelance engagements,
+                and personal engineering.
               </p>
             </motion.div>
 
@@ -286,12 +297,13 @@ export default function ProjectsPage() {
         <div className="container-wide">
           <motion.div
             {...fadeUp(listInView, 0)}
-            className="mb-5 flex flex-wrap gap-2 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-2"
+            className="isolate mb-5 flex flex-wrap gap-2 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-2"
             role="group"
             aria-label="Filter projects"
           >
             {FILTERS.map(({ key, label }) => {
               const count = key === 'all' ? PROJECTS.length : applyFilter(PROJECTS, key).length;
+              if (count === 0) return null;
               const isActive = activeFilter === key;
               return (
                 <button
@@ -308,7 +320,7 @@ export default function ProjectsPage() {
                   {isActive && (
                     <motion.span
                       layoutId="filter-pill"
-                      className="absolute inset-0 -z-10 rounded-xl bg-[var(--accent)] shadow-sm"
+                      className="absolute inset-0 -z-10 rounded-xl bg-indigo-600 shadow-sm"
                       transition={{ type: 'spring', stiffness: 450, damping: 35 }}
                     />
                   )}

@@ -3,10 +3,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
 import { FaSun, FaMoon, FaBars, FaTimes, FaGithub, FaLinkedin } from 'react-icons/fa';
 import { NAV_LINKS } from '../../data/navigation';
 import { useTheme } from '../ThemeProvider';
+
+/* Stacked icons crossfade in place, so a button is never blank mid-swap */
+const ICON_SWAP =
+  'absolute inset-0 flex items-center justify-center transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none';
 
 const Navbar = () => {
   const { darkMode, toggleDarkMode } = useTheme();
@@ -55,10 +58,19 @@ const Navbar = () => {
     setTimeout(() => menuButtonRef.current?.focus(), 100);
   }, []);
 
-  // ── Focus trap + Escape key inside mobile menu ────────────
+  // ── Escape closes the menu from anywhere ──────────────────
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeMenu();
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [menuOpen, closeMenu]);
+
+  // ── Focus trap inside mobile menu ─────────────────────────
   const handleMenuKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === 'Escape') { closeMenu(); return; }
       if (e.key !== 'Tab' || !menuRef.current) return;
 
       const focusable = Array.from(
@@ -79,7 +91,7 @@ const Navbar = () => {
         first.focus();
       }
     },
-    [closeMenu],
+    [],
   );
 
   return (
@@ -116,7 +128,7 @@ const Navbar = () => {
                   Geethanga
                 </span>
                 <span className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">
-                  Full Stack Dev
+                  Full-Stack Developer
                 </span>
               </span>
             </Link>
@@ -176,24 +188,16 @@ const Navbar = () => {
                 <button
                   onClick={toggleDarkMode}
                   aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-                  className="ml-1 flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg
+                  className="relative ml-1 flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg
                              border border-[var(--border)] bg-[var(--surface)] text-[var(--text-muted)]
                              transition-all hover:border-[var(--border-strong)] hover:text-[var(--text)] focus-ring"
                 >
-                  <AnimatePresence mode="wait" initial={false}>
-                    <motion.span
-                      key={darkMode ? 'sun' : 'moon'}
-                      initial={{ y: 6, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: -6, opacity: 0 }}
-                      transition={{ duration: 0.14, ease: 'easeInOut' }}
-                      className="flex items-center justify-center"
-                    >
-                      {darkMode
-                        ? <FaSun size={14} className="text-amber-400" />
-                        : <FaMoon size={14} className="text-indigo-400" />}
-                    </motion.span>
-                  </AnimatePresence>
+                  <span className={`${ICON_SWAP} ${darkMode ? 'rotate-0 opacity-100' : 'rotate-45 opacity-0'}`}>
+                    <FaSun size={14} className="text-amber-400" />
+                  </span>
+                  <span className={`${ICON_SWAP} ${darkMode ? '-rotate-45 opacity-0' : 'rotate-0 opacity-100'}`}>
+                    <FaMoon size={14} className="text-indigo-400" />
+                  </span>
                 </button>
 
                 <Link
@@ -212,24 +216,16 @@ const Navbar = () => {
                 <button
                   onClick={toggleDarkMode}
                   aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-                  className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg
+                  className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg
                              border border-[var(--border)] bg-[var(--surface)] text-[var(--text-muted)]
                              transition-all hover:text-[var(--text)] focus-ring"
                 >
-                  <AnimatePresence mode="wait" initial={false}>
-                    <motion.span
-                      key={darkMode ? 'sun-m' : 'moon-m'}
-                      initial={{ y: 6, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: -6, opacity: 0 }}
-                      transition={{ duration: 0.14 }}
-                      className="flex items-center justify-center"
-                    >
-                      {darkMode
-                        ? <FaSun size={14} className="text-amber-400" />
-                        : <FaMoon size={14} className="text-indigo-400" />}
-                    </motion.span>
-                  </AnimatePresence>
+                  <span className={`${ICON_SWAP} ${darkMode ? 'rotate-0 opacity-100' : 'rotate-45 opacity-0'}`}>
+                    <FaSun size={14} className="text-amber-400" />
+                  </span>
+                  <span className={`${ICON_SWAP} ${darkMode ? '-rotate-45 opacity-0' : 'rotate-0 opacity-100'}`}>
+                    <FaMoon size={14} className="text-indigo-400" />
+                  </span>
                 </button>
 
                 <button
@@ -242,22 +238,10 @@ const Navbar = () => {
                              border border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]
                              transition-all hover:text-[var(--text)] focus-ring"
                 >
-                  <span
-                    className={[
-                      'absolute inset-0 flex items-center justify-center',
-                      'transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none',
-                      menuOpen ? 'rotate-45 opacity-0' : 'rotate-0 opacity-100',
-                    ].join(' ')}
-                  >
+                  <span className={`${ICON_SWAP} ${menuOpen ? 'rotate-45 opacity-0' : 'rotate-0 opacity-100'}`}>
                     <FaBars size={15} />
                   </span>
-                  <span
-                    className={[
-                      'absolute inset-0 flex items-center justify-center',
-                      'transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none',
-                      menuOpen ? 'rotate-0 opacity-100' : '-rotate-45 opacity-0',
-                    ].join(' ')}
-                  >
+                  <span className={`${ICON_SWAP} ${menuOpen ? 'rotate-0 opacity-100' : '-rotate-45 opacity-0'}`}>
                     <FaTimes size={15} />
                   </span>
                 </button>
@@ -307,6 +291,7 @@ const Navbar = () => {
               <Link
                 key={link.path}
                 href={link.path}
+                onClick={closeMenu}
                 className={[
                   'flex items-center rounded-xl px-4 py-3 text-[15px] font-medium',
                   'transition-all duration-150 focus-ring',
@@ -329,6 +314,7 @@ const Navbar = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub profile"
+              onClick={closeMenu}
               className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--border)]
                          bg-[var(--surface)] text-[var(--text-secondary)] transition-all
                          hover:bg-[var(--surface-raised)] hover:text-[var(--text)] focus-ring"
@@ -340,6 +326,7 @@ const Navbar = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn profile"
+              onClick={closeMenu}
               className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--border)]
                          bg-[var(--surface)] text-[var(--text-secondary)] transition-all
                          hover:bg-[var(--surface-raised)] hover:text-[var(--text)] focus-ring"
@@ -350,6 +337,7 @@ const Navbar = () => {
 
           <Link
             href="/contact"
+            onClick={closeMenu}
             className="flex max-w-[160px] flex-1 items-center justify-center rounded-xl bg-[var(--accent)]
                        px-4 py-2.5 text-sm font-semibold text-white shadow-[0_1px_4px_rgba(99,102,241,0.4)]
                        transition-colors hover:bg-[var(--accent-hover)] focus-ring"

@@ -3,9 +3,9 @@ import { SocialLink } from '../types/social';
 
 export const SITE_URL = 'https://geethanga.me';
 export const SITE_NAME = 'Geethanga Dissanayake';
-export const SITE_TITLE = 'Geethanga Dissanayake - Software Engineer';
+export const SITE_TITLE = 'Geethanga Dissanayake - Associate Software Engineer | Full-Stack Developer';
 export const SITE_DESCRIPTION =
-  'Portfolio of Geethanga Dissanayake, Software Engineer focused on scalable full-stack products and premium user experiences.';
+  'Associate Software Engineer with 1+ year of professional experience building production full-stack web applications with Java 17, Spring Boot, React and Next.js.';
 export const OG_IMAGE = `${SITE_URL}/assets/letter-g.png`;
 
 export const SOCIAL_LINKS: SocialLink[] = [

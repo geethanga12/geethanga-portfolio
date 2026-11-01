@@ -18,9 +18,9 @@ import {
 } from 'react-icons/fa';
 import {
   SiSpring,
+  SiNextdotjs,
   SiTypescript,
   SiTailwindcss,
-  SiMysql,
   SiPostgresql,
 } from 'react-icons/si';
 import { MdVerified } from 'react-icons/md';
@@ -28,9 +28,8 @@ import { MdVerified } from 'react-icons/md';
 /* ─── Data ──────────────────────────────────────────────────────── */
 
 const ROLES = [
-  'Full Stack Developer',
-  'Software Engineer',
-  'Aspiring AI Engineer',
+  'Associate Software Engineer',
+  'Full-Stack Developer',
 ] as const;
 
 const SOCIAL = [
@@ -44,10 +43,10 @@ const TECH_STACK = [
   { label: 'Java',         icon: FaJava,        color: '#f89820' },
   { label: 'Spring Boot',  icon: SiSpring,      color: '#6db33f' },
   { label: 'React',        icon: FaReact,       color: '#61dafb' },
+  { label: 'Next.js',      icon: SiNextdotjs,   color: 'var(--text)' },
   { label: 'TypeScript',   icon: SiTypescript,  color: '#3178c6' },
   { label: 'Node.js',      icon: FaNodeJs,      color: '#68a063' },
   { label: 'Tailwind CSS', icon: SiTailwindcss, color: '#38bdf8' },
-  { label: 'MySQL',        icon: SiMysql,       color: '#4479a1' },
   { label: 'PostgreSQL',   icon: SiPostgresql,  color: '#336791' },
   { label: 'Docker',       icon: FaDocker,      color: '#2496ed' },
   { label: 'AWS',          icon: FaAws,         color: '#ff9900' },

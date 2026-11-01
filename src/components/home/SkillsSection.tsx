@@ -9,9 +9,8 @@ import {
   FaCss3Alt,
   FaReact,
   FaNodeJs,
-  FaAws,
-  FaDocker,
   FaGithub,
+  FaLinux,
 } from 'react-icons/fa';
 import {
   SiJavascript,
@@ -20,23 +19,34 @@ import {
   SiSpring,
   SiSpringsecurity,
   SiTailwindcss,
-  SiFlutter,
-  SiExpress,
   SiMysql,
   SiPostgresql,
   SiHibernate,
   SiPrisma,
-  SiGithubcopilot,
-  SiHostinger,
+  SiApachemaven,
+  SiVite,
+  SiTanstack,
+  SiReacthookform,
+  SiZod,
+  SiFlyway,
+  SiNginx,
+  SiCloudflare,
+  SiGit,
+  SiPostman,
 } from 'react-icons/si';
-import { FiCode, FiLayers, FiDatabase, FiCloud, FiRefreshCw } from 'react-icons/fi';
-import { HiSparkles } from 'react-icons/hi';
+import {
+  FiCode,
+  FiServer,
+  FiLayout,
+  FiLayers,
+  FiDatabase,
+  FiTool,
+  FiRefreshCw,
+  FiGlobe,
+} from 'react-icons/fi';
 
-/* Official full-colour marks for tools react-icons lacks (served from /public) */
+/* Official full-colour mark for a tool react-icons lacks (served from /public) */
 const claudeLogo = '/assets/logos/claude.svg';
-const antigravityLogo = '/assets/logos/antigravity.ico';
-const vscodeLogo = '/assets/logos/vscode.svg';
-const intellijLogo = '/assets/logos/intellij.svg';
 
 /* ─── Data ──────────────────────────────────────────────────────────────── */
 
@@ -66,59 +76,64 @@ const SKILL_GROUPS: SkillGroup[] = [
     Icon: FiCode,
     skills: [
       { name: 'Java',       Icon: FaJava,       color: '#f89820' },
-      { name: 'JavaScript', Icon: SiJavascript, color: '#f7df1e' },
       { name: 'TypeScript', Icon: SiTypescript, color: '#3178c6' },
+      { name: 'JavaScript', Icon: SiJavascript, color: '#f7df1e' },
       { name: 'Python',     Icon: FaPython,     color: '#3776ab' },
+      { name: 'SQL',        Icon: FiDatabase,   color: ACCENT },
       { name: 'HTML5',      Icon: FaHtml5,      color: '#e34f26' },
       { name: 'CSS3',       Icon: FaCss3Alt,    color: '#1572b6' },
     ],
   },
   {
-    label: 'Database & ORM',
+    label: 'Backend',
+    Icon: FiServer,
+    skills: [
+      { name: 'Spring Boot',                 Icon: SiSpring,         color: '#6db33f' },
+      { name: 'Spring Security',             Icon: SiSpringsecurity, color: '#6db33f' },
+      { name: 'Spring Data JPA',             Icon: SiSpring,         color: '#6db33f' },
+      { name: 'Hibernate',                   Icon: SiHibernate,      color: '#59666c' },
+      { name: 'REST API design',             Icon: FiGlobe,          color: ACCENT },
+      { name: 'Node.js (Next.js API routes)', Icon: FaNodeJs,        color: '#68a063' },
+      { name: 'Maven',                       Icon: SiApachemaven,    color: '#c71a36' },
+    ],
+  },
+  {
+    label: 'Frontend',
+    Icon: FiLayout,
+    skills: [
+      { name: 'React',               Icon: FaReact,         color: '#61dafb' },
+      { name: 'Next.js (App Router)', Icon: SiNextdotjs,    color: TEXT },
+      { name: 'Vite',                Icon: SiVite,          color: '#646cff' },
+      { name: 'Tailwind CSS',        Icon: SiTailwindcss,   color: '#38bdf8' },
+      { name: 'TanStack Query',      Icon: SiTanstack,      color: '#ff4154' },
+      { name: 'React Hook Form',     Icon: SiReacthookform, color: '#ec5990' },
+      { name: 'Zod',                 Icon: SiZod,           color: '#3e67b1' },
+    ],
+  },
+  {
+    label: 'Databases',
     Icon: FiDatabase,
     skills: [
-      { name: 'MySQL',      Icon: SiMysql,      color: '#4479a1' },
-      { name: 'PostgreSQL', Icon: SiPostgresql, color: '#336791' },
-      { name: 'Hibernate',  Icon: SiHibernate,  color: '#59666c' },
-      { name: 'Prisma',     Icon: SiPrisma,     color: TEXT },
+      { name: 'MySQL',                    Icon: SiMysql,      color: '#4479a1' },
+      { name: 'PostgreSQL',               Icon: SiPostgresql, color: '#336791' },
+      { name: 'Prisma ORM',               Icon: SiPrisma,     color: TEXT },
+      { name: 'Flyway migrations',        Icon: SiFlyway,     color: '#cc0200' },
+      { name: 'Relational schema design', Icon: FiLayers,     color: ACCENT },
     ],
   },
   {
-    label: 'Frameworks & Libraries',
-    Icon: FiLayers,
-    span: 'lg:col-span-2',
+    label: 'DevOps & Tools',
+    Icon: FiTool,
+    span: 'md:col-span-2',
     skills: [
-      { name: 'React',           Icon: FaReact,          color: '#61dafb' },
-      { name: 'Next.js',         Icon: SiNextdotjs,      color: TEXT },
-      { name: 'Spring Boot',     Icon: SiSpring,         color: '#6db33f' },
-      { name: 'Spring Security', Icon: SiSpringsecurity, color: '#6db33f' },
-      { name: 'Node.js',         Icon: FaNodeJs,         color: '#68a063' },
-      { name: 'Express.js',      Icon: SiExpress,        color: TEXT },
-      { name: 'Tailwind CSS',    Icon: SiTailwindcss,    color: '#38bdf8' },
-      { name: 'React Native',    Icon: FaReact,          color: '#61dafb' },
-      { name: 'Flutter',         Icon: SiFlutter,        color: '#02569b' },
-    ],
-  },
-  {
-    label: 'Cloud & DevOps',
-    Icon: FiCloud,
-    skills: [
-      { name: 'Docker',       Icon: FaDocker,    color: '#2496ed' },
-      { name: 'AWS',          Icon: FaAws,       color: '#ff9900' },
-      { name: 'CI/CD',        Icon: FiRefreshCw, color: ACCENT },
-      { name: 'Hostinger',    Icon: SiHostinger, color: '#673de6' },
-      { name: 'Git & GitHub', Icon: FaGithub,    color: TEXT },
-    ],
-  },
-  {
-    label: 'AI & Tools',
-    Icon: HiSparkles,
-    skills: [
-      { name: 'Claude Code',    img: claudeLogo },
-      { name: 'GitHub Copilot', Icon: SiGithubcopilot, color: TEXT },
-      { name: 'Antigravity',    img: antigravityLogo },
-      { name: 'VS Code',        img: vscodeLogo },
-      { name: 'IntelliJ IDEA',  img: intellijLogo },
+      { name: 'Linux (Ubuntu) VPS', Icon: FaLinux,      color: TEXT },
+      { name: 'Nginx',              Icon: SiNginx,      color: '#009639' },
+      { name: 'CI/CD',              Icon: FiRefreshCw,  color: ACCENT },
+      { name: 'Cloudflare',         Icon: SiCloudflare, color: '#f38020' },
+      { name: 'Git',                Icon: SiGit,        color: '#f05032' },
+      { name: 'GitHub',             Icon: FaGithub,     color: TEXT },
+      { name: 'Postman',            Icon: SiPostman,    color: '#ff6c37' },
+      { name: 'AI-assisted development (Claude Code)', img: claudeLogo },
     ],
   },
 ];
@@ -182,12 +197,12 @@ export default function SkillsSection() {
           </h2>
           <p className="section-desc mt-2 max-w-lg">
             The languages, frameworks, and platforms I use to design, build, and ship
-            full-stack products — from database schema to cloud deployment.
+            full-stack products — from database schema to production deployment.
           </p>
         </motion.div>
 
         {/* Bento grid of skill groups */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {SKILL_GROUPS.map((group, i) => {
             const { Icon } = group;
             return (

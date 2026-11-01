@@ -4,6 +4,7 @@ import { useState, useRef, useId } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import {
   FaEnvelope,
+  FaPhoneAlt,
   FaWhatsapp,
   FaLinkedin,
   FaGithub,
@@ -38,6 +39,14 @@ const METHODS: ContactMethod[] = [
     href: `mailto:${RECIPIENT_EMAIL}`,
     iconClass: 'text-[#ea4335]',
     iconBg: 'bg-[#ea4335]/10',
+  },
+  {
+    icon: FaPhoneAlt,
+    label: 'Phone',
+    value: '+94 77 990 7343',
+    href: 'tel:+94779907343',
+    iconClass: 'text-[var(--accent)]',
+    iconBg: 'bg-[var(--accent-subtle)]',
   },
   {
     icon: FaWhatsapp,
@@ -292,8 +301,8 @@ export default function ContactPage() {
                   <motion.a
                     key={m.label}
                     href={m.href}
-                    target={m.href.startsWith('mailto') ? undefined : '_blank'}
-                    rel={m.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
+                    target={m.href.startsWith('http') ? '_blank' : undefined}
+                    rel={m.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                     {...fadeUp(formInView, 0.06 + i * 0.07)}
                     className="group flex items-center gap-4 rounded-xl border border-[var(--border)]
                                bg-[var(--surface)] px-5 py-4 transition-all duration-200

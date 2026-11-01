@@ -3,11 +3,11 @@ import type { EducationEntry } from '../types/education';
 export const EDUCATION: EducationEntry[] = [
   {
     degree: 'BSc (Hons) Computer Science (Software Engineering)',
-    institution: 'University of Wolverhampton',
-    location: 'Wolverhampton, UK (via CINEC Campus, Sri Lanka)',
+    institution: 'University of Wolverhampton, UK',
+    location: 'Delivered at CINEC Campus, Sri Lanka',
     period: '2024 – 2025',
     type: 'degree',
-    grade: 'Second Class (Upper Division)',
+    grade: 'Second Class Honours, Upper Division (2:1)',
     description:
       'Honours degree deepening expertise in advanced software engineering, distributed systems, and professional development practices.',
     highlights: [
@@ -19,7 +19,7 @@ export const EDUCATION: EducationEntry[] = [
   {
     degree: 'Pearson BTEC Level 5 HND in Computing (Software Engineering)',
     institution: 'CINEC Campus',
-    location: 'Colombo, Sri Lanka',
+    location: 'Sri Lanka',
     period: '2022 – 2024',
     type: 'diploma',
     description:

@@ -4,7 +4,7 @@ import { SITE_URL } from '../../data/site';
 export const metadata: Metadata = {
   title: 'Projects',
   description:
-    'Full-stack, frontend, and production-style web projects by Geethanga Dissanayake — Spring Boot, React, Next.js, MySQL, AWS and more.',
+    'Full-stack, frontend, and production-style web projects by Geethanga Dissanayake — Spring Boot, React, Next.js, MySQL, PostgreSQL and more.',
   alternates: {
     canonical: `${SITE_URL}/projects`,
   },

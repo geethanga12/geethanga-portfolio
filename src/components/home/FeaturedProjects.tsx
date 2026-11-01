@@ -9,6 +9,7 @@ import {
   FiArrowRight,
   FiArrowUpRight,
   FiFileText,
+  FiClock,
 } from 'react-icons/fi';
 import { PROJECTS } from '../../data/projects';
 import type { Project, ProjectLink } from '../../types/project';
@@ -17,33 +18,36 @@ import type { Project, ProjectLink } from '../../types/project';
 
 /** Short impact-focused descriptions keyed by slug */
 const IMPACT: Record<string, string> = {
-  smartbiz:
-    'End-to-end ERP-lite for SMEs — sales, inventory, suppliers, expenses, and customer management in a unified full-stack system across web and mobile.',
+  'uds-pos':
+    'Multi-tenant POS and inventory platform for retail and spare-parts businesses, with tenant- and branch-level data isolation, 630 tests, and 87.6% backend coverage.',
+  'uds-lms':
+    'Learning platform with Student, Tutor, and Admin roles covering courses, quizzes, certification, and PayHere payments. Built and deployed end to end.',
   'iclazz-education':
-    'Role-gated education platform serving students, tutors, and coordinators with class lifecycle management, attendance, and calendar tooling. Live in production.',
+    'Production tuition platform serving 700+ tutors and 1,000+ students across four role-based dashboards, covering the full class lifecycle with OnePay subscription billing.',
   'royal-weddings':
-    'Production wedding brand site built with Next.js — componentized CMS flows, SEO-conscious architecture, and fully responsive UI shipped during internship.',
-  pathwise:
-    'AI-assisted dual-module platform matching student career growth profiles with employer-aligned hiring pathways and structured progression dashboards.',
+    'Multi-vendor wedding services marketplace built with Next.js, onboarding 50+ real vendors across four access levels, with PayHere vendor subscriptions. Live in production.',
 };
 
 const CATEGORY_STYLE: Record<string, string> = {
+  professional:
+    'bg-[var(--bg)] text-[var(--blue-text)] border border-[var(--blue-text)]/20',
   personal:
-    'bg-[var(--accent-subtle)] text-[var(--accent)] border border-[var(--accent)]/20',
+    'bg-[var(--bg)] text-[var(--accent-text)] border border-[var(--accent-text)]/20',
   internship:
-    'bg-[var(--green-subtle)] text-[var(--green-text)] border border-[var(--green-text)]/20',
+    'bg-[var(--bg)] text-[var(--green-text)] border border-[var(--green-text)]/20',
   academic:
-    'bg-[var(--amber-subtle)] text-[var(--amber-text)] border border-[var(--amber-text)]/20',
+    'bg-[var(--bg)] text-[var(--amber-text)] border border-[var(--amber-text)]/20',
 };
 
 const CATEGORY_LABEL: Record<string, string> = {
+  professional: 'Professional',
   personal: 'Personal',
   internship: 'Internship',
   academic: 'Academic',
 };
 
 /** Ordered slugs for the featured list */
-const FEATURED_SLUGS = ['smartbiz', 'iclazz-education', 'royal-weddings', 'pathwise'];
+const FEATURED_SLUGS = ['iclazz-education', 'royal-weddings', 'uds-pos', 'uds-lms'];
 
 const featured: Project[] = FEATURED_SLUGS
   .map((slug) => PROJECTS.find((p) => p.slug === slug))
@@ -108,7 +112,7 @@ function PremiumCard({ project, rank }: { project: Project; rank: string }) {
         <span
           aria-label={`Project ${rank}`}
           className="absolute left-4 top-4 inline-flex items-center justify-center rounded-full
-                     bg-black/45 px-2.5 py-1 font-mono text-xs font-bold tabular-nums text-white
+                     bg-black/75 px-2.5 py-1 font-mono text-xs font-bold tabular-nums text-white
                      backdrop-blur-sm ring-1 ring-white/20"
         >
           #{rank}
@@ -117,7 +121,7 @@ function PremiumCard({ project, rank }: { project: Project; rank: string }) {
         {/* Category badge */}
         <span
           className={`absolute right-4 top-4 inline-flex items-center rounded-full px-2.5 py-0.5
-                      text-[10px] font-semibold uppercase tracking-wider backdrop-blur-sm ${catStyle}`}
+                      text-[10px] font-semibold uppercase tracking-wider ${catStyle}`}
         >
           {catLabel}
         </span>
@@ -160,6 +164,13 @@ function PremiumCard({ project, rank }: { project: Project; rank: string }) {
 
         {/* Links */}
         <div className="flex flex-wrap gap-2 pt-1">
+          {project.status === 'in-development' && (
+            <span className={`${pillBase} border-[var(--amber-text)]/30 bg-[var(--amber-subtle)] text-[var(--amber-text)]`}>
+              <FiClock size={11} aria-hidden />
+              In development
+            </span>
+          )}
+
           {liveLinks.map((link) => (
             <a
               key={link.url}
@@ -244,7 +255,7 @@ export default function FeaturedProjects() {
               Featured Projects
             </h2>
             <p className="section-desc mt-2 max-w-xl">
-              A curated set of full-stack builds — spanning production SaaS, internship
+              A curated set of full-stack builds — spanning professional work, internship
               deliverables, and personal engineering.
             </p>
           </div>

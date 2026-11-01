@@ -46,25 +46,25 @@ const CODE_LINES: Line[] = [
   [
     { text: '  role',                             type: 'property' },
     { text: ': ',                                 type: 'punct'    },
-    { text: '"Associate Full Stack Developer"',   type: 'string'   },
+    { text: '"Associate Software Engineer"',      type: 'string'   },
     { text: ',',                                  type: 'punct'    },
   ],
   [
-    { text: '  location', type: 'property' },
-    { text: ': ',         type: 'punct'    },
-    { text: '"Sri Lanka"',type: 'string'   },
-    { text: ',',          type: 'punct'    },
+    { text: '  location',             type: 'property' },
+    { text: ': ',                     type: 'punct'    },
+    { text: '"Kurunegala, Sri Lanka"',type: 'string'   },
+    { text: ',',                      type: 'punct'    },
   ],
   [
     { text: '  focus',       type: 'property' },
     { text: ': [',           type: 'punct'    },
-    { text: '"React"',       type: 'string'   },
+    { text: '"Java 17"',     type: 'string'   },
     { text: ', ',            type: 'punct'    },
     { text: '"Spring Boot"', type: 'string'   },
     { text: ', ',            type: 'punct'    },
-    { text: '"Next.js"',     type: 'string'   },
+    { text: '"React"',       type: 'string'   },
     { text: ', ',            type: 'punct'    },
-    { text: '"AWS"',         type: 'string'   },
+    { text: '"Next.js"',     type: 'string'   },
     { text: '],',            type: 'punct'    },
   ],
   [
@@ -102,11 +102,13 @@ const CODE_LINES: Line[] = [
     { text: '],',              type: 'punct'    },
   ],
   [
-    { text: '    cloud',       type: 'property' },
+    { text: '    devops',      type: 'property' },
     { text: ': [',             type: 'punct'    },
-    { text: '"AWS"',           type: 'string'   },
+    { text: '"Linux VPS"',     type: 'string'   },
     { text: ', ',              type: 'punct'    },
-    { text: '"Docker"',        type: 'string'   },
+    { text: '"Nginx"',         type: 'string'   },
+    { text: ', ',              type: 'punct'    },
+    { text: '"CI/CD"',         type: 'string'   },
     { text: ', ',              type: 'punct'    },
     { text: '"Cloudflare"',    type: 'string'   },
     { text: '],',              type: 'punct'    },
@@ -121,7 +123,7 @@ const CODE_LINES: Line[] = [
     { text: ', ',               type: 'punct'    },
     { text: '"LMS Platforms"',  type: 'string'   },
     { text: ', ',               type: 'punct'    },
-    { text: '"E-Commerce"',     type: 'string'   },
+    { text: '"POS Systems"',    type: 'string'   },
     { text: '],',               type: 'punct'    },
   ],
   [
@@ -147,11 +149,11 @@ const CODE_LINES: Line[] = [
 /* ─── Stat cards ────────────────────────────────────────────────── */
 
 const STAT_CARDS = [
-  { icon: FaRocket,     value: '6+',          label: 'Projects Shipped'   },
+  { icon: FaRocket,     value: '3',           label: 'Live Business Systems' },
   { icon: FaLayerGroup, value: 'Full‑Stack',   label: 'End-to-End Dev'    },
   { icon: FaCode,       value: 'TypeScript',   label: 'Type-Safe Code'    },
   { icon: FaPlug,       value: 'API‑First',    label: 'REST Integration'  },
-  { icon: FaCloud,      value: 'AWS · Docker', label: 'Cloud Deployment'  },
+  { icon: FaCloud,      value: 'Linux · Nginx', label: 'VPS Deployment'   },
   { icon: FaBriefcase,  value: 'Open To',      label: 'New Opportunities' },
 ] as const;
 

@@ -12,6 +12,7 @@ import {
   FiTarget,
   FiCheckCircle,
   FiTrendingUp,
+  FiClock,
 } from 'react-icons/fi';
 import { CASE_STUDIES, PROJECTS } from '../../../data/projects';
 import type { ProjectLink } from '../../../types/project';
@@ -97,6 +98,12 @@ export default function ProjectDetailsPage({
               <FiCalendar size={14} aria-hidden className="text-[var(--accent)]" />
               {study.timeline}
             </span>
+            {project?.status === 'in-development' && (
+              <span className={`${pill} border-[var(--amber-text)]/30 bg-[var(--amber-subtle)] text-[var(--amber-text)]`}>
+                <FiClock size={12} aria-hidden />
+                In development
+              </span>
+            )}
           </div>
         </header>
 
